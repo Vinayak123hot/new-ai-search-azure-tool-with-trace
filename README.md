@@ -1,199 +1,108 @@
-# KB Candidates Tool
+# KB Candidates Tool — Azure App Service
 
-A lightweight HTTP service that powers **Outlook support triage**. Given a free-text
-description of an issue, it searches a curated Azure AI Search knowledge base and returns
-the most relevant KB articles, along with metadata that helps an AI agent decide whether
-to **ask a clarifying question** or **resolve the issue immediately**.
+A lightweight FastAPI service for **Outlook support triage**. Given a free-text issue description, it queries an Azure AI Search knowledge base and returns the most relevant KB articles with a confidence signal (`spread`) that tells an AI agent whether to ask a follow-up question or resolve immediately.
 
-The service is designed to be called as a **tool by an AI agent** (e.g. an Azure AI
-Foundry / Copilot-style agent). It exposes a single, well-documented API endpoint and is
-deployed as a hardened systemd service behind nginx with TLS.
-
----
-
-## Table of Contents
-
-1. [How It Works](#how-it-works)
-2. [Folder Structure](#folder-structure)
-3. [File-by-File Reference](#file-by-file-reference)
-4. [The API](#the-api)
-5. [Configuration](#configuration)
-6. [Deployment](#deployment)
-7. [Testing](#testing)
+Designed to be called as a **tool by an AI agent** (Azure AI Foundry, Copilot Studio, etc.).
 
 ---
 
 ## How It Works
 
 ```
-                 ┌──────────────────────────────────────────────┐
-   User issue    │                  AI Agent                     │
-  ────────────►  │  (sends cumulative description on each turn)  │
-                 └───────────────────┬──────────────────────────┘
-                                     │  POST /get_kb_candidates
-                                     │  (x-api-key header)
-                                     ▼
-   ┌───────────────┐        ┌──────────────────┐        ┌─────────────────────┐
-   │     nginx     │  ───►  │  FastAPI service  │  ───►  │   Azure AI Search   │
-   │ (TLS + proxy) │        │   (uvicorn:8000)  │        │ (semantic + vector) │
-   └───────────────┘        └──────────────────┘        └─────────────────────┘
-```
-
-1. The agent sends the user's **full cumulative description** to `/get_kb_candidates`.
-2. The service runs a **hybrid query** against Azure AI Search — combining semantic
-   ranking with vector (embedding) similarity.
-3. It returns the top candidate articles plus a **`spread`** signal:
-   - **`high`** → candidates are tightly clustered (ambiguous). The agent should ask
-     **one** follow-up question grounded only in the returned `key_symptoms`.
-   - **`low`** → one candidate clearly leads. The agent is ready to resolve.
-4. The agent calls the tool again after each follow-up answer until the spread resolves.
-
-This "spread" mechanism is the core idea: it lets the agent intelligently decide when it
-has enough confidence to act, instead of guessing.
-
----
-
-## Folder Structure
-
-```
-clasisi_agent/
-├── app/                     # The FastAPI application
-│   ├── main.py              # Service entrypoint and all business logic
-│   └── requirements.txt     # Python dependencies (pinned versions)
-│
-├── config/                  # Deployment configuration
-│   ├── kbtool.env           # Environment variables & secrets (NOT for source control)
-│   ├── kbtool.service       # systemd unit definition
-│   └── nginx.conf           # nginx reverse-proxy site definition
-│
-├── openapi/                 # Tool contract & integration tests
-│   ├── kb_candidates.json   # OpenAPI 3.0 spec (the agent's tool definition)
-│   └── test.sh              # End-to-end smoke tests against the live endpoint
-│
-├── scripts/                 # Operations automation
-│   ├── setup.sh             # One-time VM provisioning (deps, service, nginx, TLS)
-│   └── deploy.sh            # Redeploy: update deps + restart service
-│
-└── venv/                    # Python virtual environment (generated, not in repo)
+   User issue
+   ──────────►  AI Agent  ──► POST /get_kb_candidates  ──► Azure AI Search
+                                      │                    (semantic + vector)
+                                      ▼
+                             Returns candidates + spread
+                             spread=high → agent asks follow-up
+                             spread=low  → agent resolves issue
 ```
 
 ---
 
-## File-by-File Reference
+## Project Structure
 
-### `app/main.py` — Application core
-The heart of the project. A FastAPI application that:
-
-- **Loads configuration** from environment variables (search credentials, API key, and
-  tuning knobs like `TOP_K`, `MIN_SCORE`, `SPREAD_THRESHOLD`).
-- **`GET /healthz`** — a simple liveness probe used by deploy scripts and nginx.
-- **`POST /get_kb_candidates`** — the main endpoint. It:
-  - Authenticates the caller via the `x-api-key` header.
-  - Validates that a `description` was provided.
-  - Runs a **semantic + vector** query against Azure AI Search.
-  - Computes a confidence **`spread`** (`compute_spread`) from the result scores.
-  - Extracts short symptom snippets (`extract_key_symptoms`) as a stand-in until a
-    curated `key_symptoms` field is added to the index.
-  - Filters out low-confidence results below `MIN_SCORE`.
-- **Global exception handler** — returns clean JSON `500` errors and logs the full trace.
-
-**Importance:** This is the only application code in the project; everything else exists
-to configure, deploy, document, or test it.
-
-### `app/requirements.txt` — Dependencies
-Pins exact versions of the runtime libraries:
-- `fastapi` / `uvicorn` — the web framework and ASGI server.
-- `pydantic` — request validation (`CandidateRequest`).
-- `azure-search-documents` / `azure-core` — the Azure AI Search client.
-
-**Importance:** Guarantees reproducible installs across the dev machine and the VM.
-
-### `config/kbtool.env` — Secrets & tuning
-Environment file consumed by the systemd service. Holds:
-- **Azure AI Search** endpoint, index name, and admin key.
-- **`TOOL_API_KEY`** — the shared secret the agent must send in `x-api-key`.
-- **Tuning parameters** — `SPREAD_THRESHOLD`, `MIN_SCORE`, `TOP_K`, `RETURN_K`.
-
-> ⚠️ **Security note:** This file contains live credentials. It should be kept off
-> source control, restricted with tight file permissions, and rotated regularly.
-> Generate a fresh `TOOL_API_KEY` with `openssl rand -hex 32`.
-
-**Importance:** Central place to configure the service without touching code.
-
-### `config/kbtool.service` — systemd unit
-Defines how the service runs as a managed background process:
-- Runs `uvicorn` with 2 workers, bound to **localhost only** (nginx handles the public side).
-- Loads secrets from `kbtool.env`.
-- **Auto-restarts on crash** with rate limiting.
-- Applies **basic hardening** (`PrivateTmp`, `NoNewPrivileges`, `ProtectSystem=strict`).
-
-**Importance:** Makes the service resilient, auto-starting on boot, and operationally
-manageable via `systemctl`.
-
-### `config/nginx.conf` — Reverse proxy
-A script that writes the nginx site configuration. It:
-- Listens on port 80 and proxies the two public routes (`/healthz`, `/get_kb_candidates`)
-  to the local uvicorn process.
-- Reserves the ACME challenge path for **Let's Encrypt** certificate issuance.
-- Returns `404` for all other paths to minimize the attack surface.
-
-**Importance:** Provides the public entry point, TLS termination (via certbot), and a
-clean separation between the internet and the app process.
-
-### `openapi/kb_candidates.json` — Tool contract
-The **OpenAPI 3.0 specification** the AI agent uses to understand and call the tool. It
-documents the request/response schema, the `x-api-key` security scheme, and — crucially —
-embeds **behavioral instructions** in the endpoint description telling the agent how to
-interpret `spread` and when to ask follow-up questions.
-
-**Importance:** This is the integration contract between the agent platform and the
-service. The agent's behavior is driven directly by the descriptions in this file.
-
-### `openapi/test.sh` — Smoke tests
-A bash script that exercises the live endpoint end-to-end:
-1. Health check.
-2. A valid request (expects candidates + spread).
-3. A wrong API key (expects `401`).
-4. An empty description (expects `400`).
-
-**Importance:** Fast confidence check that a deployment is healthy and auth/validation
-behave correctly.
-
-### `scripts/setup.sh` — One-time provisioning
-Bootstraps a fresh VM from scratch:
-- Installs system packages (Python, nginx, snapd, certbot).
-- Creates the Python virtualenv and installs dependencies.
-- Installs and enables the systemd service.
-- Configures and reloads nginx.
-- Obtains a **Let's Encrypt TLS certificate** and enables HTTPS redirect.
-
-**Importance:** Turns a bare VM into a fully running, TLS-secured service in one command.
-
-### `scripts/deploy.sh` — Redeploy
-For routine updates: refreshes dependencies, restarts the service, and runs a health
-check. Use this after pulling new code.
-
-**Importance:** Safe, repeatable redeploys without re-running full provisioning.
+```
+├── app/
+│   ├── main.py                      # All application code (FastAPI)
+│   └── requirements.txt             # Python dependencies (mirror of root)
+│
+├── openapi/
+│   ├── kb_candidates.json           # OpenAPI 3.0 spec — agent tool definition
+│   └── test.sh                      # End-to-end smoke tests
+│
+├── requirements.txt                 # Python dependencies — Oryx reads this at build
+├── startup.sh                       # App Service startup command
+├── runtime.txt                      # Python version hint for Oryx
+├── azure-app-settings.env.example   # Reference for App Settings to configure in portal
+└── .gitignore
+```
 
 ---
 
-## The API
+## File Reference
 
-### `GET /healthz`
-Liveness probe. Returns:
+### `app/main.py`
+The entire application. Responsibilities:
+- Loads config from environment variables at startup
+- Fetches `search-api-key` and `tool-api-key` from Azure Key Vault via Managed Identity
+- `GET /healthz` — liveness probe, no auth required
+- `POST /get_kb_candidates` — authenticates caller via `x-api-key` header, runs hybrid semantic + vector search, deduplicates chunks by KB article, computes `spread` signal, returns top candidates
+- `POST /debug_search` — returns raw search chunks for tuning `TOP_K` / `MIN_SCORE`
+- Global exception handler returning clean JSON 500 errors
+
+**This is the only file you need to edit to change application behaviour.**
+
+### `requirements.txt` (root)
+Pinned Python dependencies read by the Azure Oryx build system during deployment. Must stay at the repo root. Contains all packages including `azure-identity` and `azure-keyvault-secrets` required for Key Vault access.
+
+### `startup.sh`
+The command Azure App Service runs to start the application:
+```bash
+/home/site/wwwroot/pythonenv3.12/bin/uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 2 --log-level info
+```
+Points to the virtual environment created by Oryx during build. If you change the Python runtime version, update the `pythonenv3.XX` path to match.
+
+### `runtime.txt`
+Tells Oryx which Python version to use when building the virtual environment. Current value: `python-3.11`. Azure App Service container may use a different patch version — the startup command path must match the actual venv created.
+
+### `azure-app-settings.env.example`
+Documents all environment variables that must be configured as Application Settings in Azure Portal. Not loaded by the app directly — it is a reference only. Copy values from here into the portal.
+
+### `app/requirements.txt`
+Mirror of the root `requirements.txt`. Kept for local development reference.
+
+### `openapi/kb_candidates.json`
+OpenAPI 3.0 specification used by AI agents to understand and call the tool. Contains the server URL, request/response schema, `x-api-key` security scheme, and behavioral instructions for the agent embedded in endpoint descriptions. **Update the `servers[].url` field when deploying to a new App Service.**
+
+### `openapi/test.sh`
+Smoke test script that validates the live endpoint:
+1. Health check (`/healthz`)
+2. Valid request — expects candidates + spread
+3. Wrong API key — expects `401`
+4. Empty description — expects `400`
+
+**Update `BASE` and `KEY` variables before running.**
+
+---
+
+## API Reference
+
+### GET /healthz
+No auth. Returns:
 ```json
 { "status": "ok", "tool": "get_kb_candidates" }
 ```
 
-### `POST /get_kb_candidates`
-**Headers:** `x-api-key: <TOOL_API_KEY>`, `Content-Type: application/json`
-
-**Request:**
+### POST /get_kb_candidates
+```
+Header: x-api-key: <tool-api-key>
+Header: Content-Type: application/json
+```
 ```json
 { "description": "Outlook crashes when I click send with a PDF attached" }
 ```
-
-**Response:**
+Response:
 ```json
 {
   "candidates": [
@@ -201,8 +110,8 @@ Liveness probe. Returns:
       "kb_id": "...",
       "kb_article_name": "...",
       "summary": "...",
-      "key_symptoms": ["...", "..."],
-      "guidance_troubleshoot": "...",
+      "key_symptoms": ["symptom 1", "symptom 2"],
+      "guidance_troubleshoot": true,
       "score": 2.134
     }
   ],
@@ -211,57 +120,224 @@ Liveness probe. Returns:
 }
 ```
 
+| `spread` | Meaning | Agent action |
+|----------|---------|-------------|
+| `high` | Candidates are clustered — ambiguous | Ask one follow-up using `key_symptoms` |
+| `low` | One candidate clearly leads | Resolve the issue |
+
 | Status | Meaning |
 |--------|---------|
-| `200`  | Candidates returned (may be empty if below confidence threshold) |
-| `400`  | Missing `description` field |
-| `401`  | Invalid or missing API key |
-| `500`  | Search or server error |
+| `200` | Success (candidates may be empty if below `MIN_SCORE`) |
+| `400` | Missing or empty `description` |
+| `401` | Invalid or missing `x-api-key` |
+| `500` | Search or server error |
+
+### POST /debug_search
+Same auth and body as above. Returns raw chunk-level results from Azure AI Search — use this to tune `TOP_K`, `MIN_SCORE`, and `SPREAD_THRESHOLD` without changing code.
 
 ---
 
-## Configuration
+## Tuning Parameters (App Settings)
 
-All settings live in `config/kbtool.env`:
-
-| Variable | Purpose | Default |
-|----------|---------|---------|
-| `SEARCH_ENDPOINT`  | Azure AI Search service URL | — (required) |
-| `SEARCH_INDEX`     | Index name to query | — (required) |
-| `SEARCH_API_KEY`   | Azure AI Search admin key | — (required) |
-| `TOOL_API_KEY`     | Shared secret for `x-api-key` auth | — (required) |
+| Setting | Purpose | Default |
+|---------|---------|---------|
+| `TOP_K` | Raw chunks fetched from search | `5` |
+| `RETURN_K` | Final candidates returned to agent | `3` |
+| `MIN_SCORE` | Minimum reranker score to include a candidate | `1.0` |
 | `SPREAD_THRESHOLD` | Score gap above which spread is "low" (confident) | `0.6` |
-| `MIN_SCORE`        | Minimum top score to return any candidate | `0.1` |
-| `TOP_K`            | Results fetched from search | `5` |
-| `RETURN_K`         | Candidates returned to the agent | `3` |
 
 ---
 
-## Deployment
+## Deploying to a New Azure App Service
 
-**First-time setup** (on the target VM — set `DOMAIN` in the script first):
-```bash
-bash scripts/setup.sh
-```
+Follow these steps in order. Replace every value in `< >` with your own.
 
-**Subsequent deploys:**
-```bash
-bash scripts/deploy.sh
-```
+### Prerequisites
+Before starting, have these ready:
+- An Azure subscription
+- An **Azure AI Search** service with a populated index
+- An **Azure Key Vault** containing two secrets:
+  - `search-api-key` — Azure AI Search admin key
+  - `tool-api-key` — any strong random string (the API password callers must send)
 
-**Service management:**
+Generate a strong `tool-api-key`:
 ```bash
-sudo systemctl status kbtool      # check status
-sudo systemctl restart kbtool     # restart
-journalctl -u kbtool -f           # tail logs
+openssl rand -hex 32
 ```
 
 ---
 
-## Testing
-
-Run the end-to-end smoke tests against the live endpoint:
+### Step 1 — Clone the repo
 ```bash
+git clone https://github.com/Vinayak123hot/ai-search-azure-web-app.git
+cd ai-search-azure-web-app
+```
+
+---
+
+### Step 2 — Create Azure App Service
+
+In Azure Portal:
+1. Create a resource → **Web App**
+2. Configure:
+   - **Runtime stack:** Python 3.12
+   - **Operating System:** Linux
+   - **Region:** your preferred region
+3. Create and wait for deployment to finish
+
+---
+
+### Step 3 — Enable Managed Identity
+
+`App Service → Identity → System assigned → Status: On → Save`
+
+Copy the **Object (principal) ID** shown — needed in Step 4.
+
+---
+
+### Step 4 — Grant Key Vault access
+
+`Key Vault → Access control (IAM) → Add role assignment`
+- Role: **Key Vault Secrets User**
+- Assign access to: **Managed identity**
+- Select: your App Service
+
+---
+
+### Step 5 — Configure Application Settings
+
+`App Service → Environment variables → App settings → + Add`
+
+Add all of these — **change the values marked with ← CHANGE**:
+
+| Name | Value |
+|------|-------|
+| `SEARCH_ENDPOINT` | `https://<your-search-service>.search.windows.net`  ← CHANGE |
+| `SEARCH_INDEX` | `<your-index-name>`  ← CHANGE |
+| `AZURE_KEY_VAULT_URL` | `https://<your-keyvault>.vault.azure.net`  ← CHANGE |
+| `SPREAD_THRESHOLD` | `0.6` |
+| `MIN_SCORE` | `1.0` |
+| `TOP_K` | `5` |
+| `RETURN_K` | `3` |
+| `WEBSITES_PORT` | `8000` |
+
+Click **Save**.
+
+---
+
+### Step 6 — Deploy the code
+
+#### Option A — Kudu Zip Deploy (no CLI needed)
+
+Get your deployment credentials:
+`App Service → Deployment Center → FTPS credentials`
+
+Note the username (starts with `$`) and password. Then run:
+
+```bash
+# Create zip (exclude git and cache)
+zip -r deploy.zip . --exclude "*.git*" --exclude "*__pycache__*" --exclude "*.pyc"
+
+# Upload to App Service (replace USERNAME and PASSWORD)
+curl -X PUT \
+  -u '$<USERNAME>:<PASSWORD>' \
+  -H "Content-Type: application/zip" \
+  --data-binary @deploy.zip \
+  https://<app-name>.scm.<region>.azurewebsites.net/api/zip/site/wwwroot/
+```
+
+Then run the Oryx build to install packages:
+```bash
+curl -s -u '$<USERNAME>:<PASSWORD>' \
+  -X POST \
+  "https://<app-name>.scm.<region>.azurewebsites.net/api/command" \
+  -H "Content-Type: application/json" \
+  -d '{"command":"/opt/oryx/oryx build /home/site/wwwroot --output /home/site/wwwroot --platform python --platform-version 3.12","dir":"/home/site/wwwroot"}'
+```
+
+#### Option B — GitHub Actions (recommended for ongoing deploys)
+
+`App Service → Deployment Center → Source: GitHub`
+
+Connect your repo and branch. Azure auto-deploys on every push to `main`.
+
+---
+
+### Step 7 — Set startup command
+
+`App Service → Configuration → General settings → Startup Command:`
+```
+bash /home/site/wwwroot/startup.sh
+```
+Click **Save** — App Service restarts automatically.
+
+---
+
+### Step 8 — Update OpenAPI spec
+
+Edit `openapi/kb_candidates.json` — update the server URL:
+```json
+"servers": [
+  { "url": "https://<your-app-name>.<region>.azurewebsites.net" }
+]
+```
+
+---
+
+### Step 9 — Verify
+
+```bash
+# Health check — should return {"status":"ok","tool":"get_kb_candidates"}
+curl https://<your-app-name>.<region>.azurewebsites.net/healthz
+
+# Full smoke test (edit BASE and KEY in the script first)
 bash openapi/test.sh
 ```
-This verifies the health check, a successful query, and the `401`/`400` error paths.
+
+---
+
+## Troubleshooting
+
+| Symptom | Cause | Fix |
+|---------|-------|-----|
+| `KeyError: 'SEARCH_ENDPOINT'` in logs | App Settings not saved | Re-add all settings in portal and Save |
+| Exit code 127 on startup | `startup.sh` points to wrong venv path | Check which `pythonenvX.XX` folder Oryx created, update `startup.sh` |
+| `401` on all requests | Wrong `tool-api-key` | Check the secret value in Key Vault matches what callers send |
+| `RuntimeError: Failed to load secrets from Key Vault` | Managed Identity not granted access | Redo Step 4 |
+| App serves default placeholder page | Startup command not set | Redo Step 7 |
+
+### View logs
+`App Service → Advanced Tools → Kudu → Logs → View Current Container Log`
+
+Or via Kudu URL:
+```
+https://<app-name>.scm.<region>.azurewebsites.net/api/logs/docker
+```
+
+---
+
+## Local Development
+
+```bash
+# Clone
+git clone https://github.com/Vinayak123hot/ai-search-azure-web-app.git
+cd ai-search-azure-web-app
+
+# Create venv and install deps
+python -m venv venv
+source venv/bin/activate        # Windows: venv\Scripts\activate
+pip install -r requirements.txt
+
+# Set env vars (copy from azure-app-settings.env.example and fill in values)
+export SEARCH_ENDPOINT=https://<your-search>.search.windows.net
+export SEARCH_INDEX=<your-index>
+export AZURE_KEY_VAULT_URL=https://<your-vault>.vault.azure.net
+
+# Auth for local Key Vault access
+az login
+
+# Run
+uvicorn app.main:app --host 127.0.0.1 --port 8000 --reload
+```
+
+App available at `http://localhost:8000`
