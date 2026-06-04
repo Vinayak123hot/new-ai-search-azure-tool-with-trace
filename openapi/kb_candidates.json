@@ -6,7 +6,7 @@
     "description": "Tool 1: Returns candidate Outlook KB articles with curated key_symptoms and spread metadata for agent triage."
   },
   "servers": [
-    { "url": "https://<your-vm-dns>.eastus.cloudapp.azure.com" }
+    { "url": "https://teva-kb-candidate-gzdchud4gwfsaqad.southindia-01.azurewebsites.net" }
   ],
   "paths": {
     "/get_kb_candidates": {

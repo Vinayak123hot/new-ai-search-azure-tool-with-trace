@@ -1,8 +1,8 @@
 #!/bin/bash
 set -euo pipefail
 
-BASE="https://vinnyclasifiervm.eastus.cloudapp.azure.com"
-KEY="befb2fb3yfg37f3gf8777gf3gfy3fb3hfb3fhb3hf3fb3hf3fj3"
+BASE="https://teva-kb-candidate-gzdchud4gwfsaqad.southindia-01.azurewebsites.net"
+KEY="<your-tool-api-key>"
 
 echo ""
 echo "=== 1. Health check ==="

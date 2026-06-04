@@ -1,3 +1,7 @@
 venv/
 __pycache__/
 *.pyc
+*.pyo
+.env
+*.env
+!azure-app-settings.env.example
