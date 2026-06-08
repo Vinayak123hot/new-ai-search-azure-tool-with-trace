@@ -1,6 +1,5 @@
 import os
 import logging
-from collections import Counter, OrderedDict
 from fastapi import FastAPI, HTTPException, Header, Request
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
@@ -57,113 +56,12 @@ class CandidateRequest(BaseModel):
     description: str
 
 
-# ── Helper functions ──────────────────────────────────────────────
+# ── Helper ────────────────────────────────────────────────────────
 def compute_spread(scores):
     if len(scores) < 2:
         return "low"
     gap = scores[0] - (scores[2] if len(scores) >= 3 else scores[1])
     return "low" if gap > SPREAD_THRESHOLD else "high"
-
-
-def extract_key_symptoms(content_text: str) -> list[str]:
-    """
-    Extracts up to 5 short symptom sentences from content_text.
-    This is a fallback until a proper key_symptoms field is added
-    to the index with curated values.
-    """
-    if not content_text:
-        return []
-    sentences = [s.strip() for s in content_text.replace("\n", ". ").split(".") if len(s.strip()) > 20]
-    return sentences[:5]
-
-
-def guidance_flag(value) -> bool | None:
-    """
-    Returns True if troubleshooting guidance exists in the KB article,
-    else None (renders as null in JSON).
-    Treats empty strings, whitespace-only strings, and missing values as null.
-    """
-    if value is None:
-        return None
-    if isinstance(value, str) and not value.strip():
-        return None
-    return True
-
-
-def merge_symptoms(symptom_lists: list[list[str]], max_total: int = 5) -> list[str]:
-    """
-    Merges multiple symptom lists (from different chunks of the same KB),
-    deduplicating while preserving order, capped at max_total.
-    """
-    seen = set()
-    merged = []
-    for sym_list in symptom_lists:
-        for s in sym_list:
-            key = s.lower().strip()
-            if key and key not in seen:
-                seen.add(key)
-                merged.append(s)
-                if len(merged) >= max_total:
-                    return merged
-    return merged
-
-
-def deduplicate_chunks_by_kb(raw_results: list[dict]) -> list[dict]:
-    """
-    Groups chunks by document_title (KB article name).
-    For each KB, keeps the highest-scoring chunk's metadata,
-    and merges key_symptoms across ALL chunks of that KB.
-    Returns deduplicated list, ordered by highest score per KB.
-    """
-    # Group chunks by document_title, preserving first-seen order (= reranker order)
-    grouped: "OrderedDict[str, list[dict]]" = OrderedDict()
-    for r in raw_results:
-        title = r.get("document_title", "") or "(untitled)"
-        grouped.setdefault(title, []).append(r)
-
-    deduped = []
-    for title, chunks in grouped.items():
-        # Sort chunks for this KB by score (descending) — best chunk wins
-        chunks_sorted = sorted(
-            chunks,
-            key=lambda c: float(
-                c.get("@search.reranker_score") or c.get("@search.score") or 0.0
-            ),
-            reverse=True,
-        )
-        best = chunks_sorted[0]
-        best_score = float(
-            best.get("@search.reranker_score")
-            or best.get("@search.score")
-            or 0.0
-        )
-
-        # Merge key_symptoms across all chunks of this KB
-        all_symptoms = [extract_key_symptoms(c.get("content_text") or "") for c in chunks_sorted]
-        merged_symptoms = merge_symptoms(all_symptoms, max_total=5)
-
-        # Use the best chunk's content_text for the summary
-        best_content_text = best.get("content_text") or ""
-
-        # Check across ALL chunks of this KB — if ANY chunk has guidance, flag = True
-        any_guidance = any(
-            guidance_flag(c.get("guidance_troubleshoot")) for c in chunks_sorted
-        )
-        guidance_value = True if any_guidance else None
-
-        deduped.append({
-            "kb_id":                 best.get("content_id", ""),
-            "kb_article_name":       title,
-            "summary":               best_content_text[:300],
-            "key_symptoms":          merged_symptoms,
-            "guidance_troubleshoot": guidance_value,  # true or null (checked across all chunks)
-            "score":                 round(best_score, 3),
-            "_chunk_count":          len(chunks),   # for debugging/visibility
-        })
-
-    # Sort final deduplicated list by score (descending)
-    deduped.sort(key=lambda d: d["score"], reverse=True)
-    return deduped
 
 
 # ── Global error handler ──────────────────────────────────────────
@@ -204,23 +102,33 @@ def get_kb_candidates(
             semantic_configuration_name=SEMANTIC_CONFIG_NAME,
             vector_queries=[VectorizableTextQuery(
                 text=description,
-                k_nearest_neighbors=20,   # ⬆️ raised to pull more chunks for dedup
+                k_nearest_neighbors=20,
                 fields="content_embedding",
             )],
             select=[
-                "content_id",
-                "document_title",
+                "kb_id",
                 "content_text",
+                "symptoms",
                 "guidance_troubleshoot",
             ],
             top=TOP_K,
         )
 
-        # Collect all raw chunks first (need them for dedup grouping)
-        raw_chunks = list(results)
+        candidates = []
+        for r in results:
+            score = float(
+                r.get("@search.reranker_score") or r.get("@search.score") or 0.0
+            )
+            candidates.append({
+                "kb_id":                 r.get("kb_id", ""),
+                "summary":               (r.get("content_text") or "")[:300],
+                "key_symptoms":          r.get("symptoms") or [],
+                "guidance_troubleshoot": r.get("guidance_troubleshoot") or None,
+                "score":                 round(score, 3),
+            })
 
-        if not raw_chunks:
-            logger.info("No chunks returned from search")
+        if not candidates:
+            logger.info("No results returned from search")
             return {
                 "candidates": [],
                 "spread":     "low",
@@ -228,47 +136,24 @@ def get_kb_candidates(
                 "message":    "No candidate exceeded minimum confidence.",
             }
 
-        # Log raw chunks before dedup
-        logger.info("Raw chunks returned: %d", len(raw_chunks))
-        for r in raw_chunks:
-            score = float(
-                r.get("@search.reranker_score")
-                or r.get("@search.score")
-                or 0.0
-            )
-            logger.info(
-                "  raw chunk: %s | score=%.3f",
-                r.get("document_title"), score
-            )
-
-        # Deduplicate by document_title
-        candidates = deduplicate_chunks_by_kb(raw_chunks)
+        candidates.sort(key=lambda c: c["score"], reverse=True)
         scores = [c["score"] for c in candidates]
 
-        logger.info("After dedup: %d unique KB articles", len(candidates))
+        logger.info("Search returned %d candidates", len(candidates))
         for c in candidates:
-            logger.info(
-                "  candidate: %s | score=%.3f | chunks=%d",
-                c["kb_article_name"], c["score"], c["_chunk_count"]
-            )
+            logger.info("  candidate: %s | score=%.3f", c["kb_id"], c["score"])
 
-        if not candidates or scores[0] < MIN_SCORE:
+        if scores[0] < MIN_SCORE:
             logger.info("No candidate above MIN_SCORE=%.2f", MIN_SCORE)
             return {
                 "candidates": [],
                 "spread":     "low",
-                "top_score":  round(scores[0], 3) if scores else 0.0,
+                "top_score":  round(scores[0], 3),
                 "message":    "No candidate exceeded minimum confidence.",
             }
 
-        # Drop internal _chunk_count before returning to agent
-        final_candidates = []
-        for c in candidates[:RETURN_K]:
-            c_clean = {k: v for k, v in c.items() if not k.startswith("_")}
-            final_candidates.append(c_clean)
-
         return {
-            "candidates": final_candidates,
+            "candidates": candidates[:RETURN_K],
             "spread":     compute_spread(scores),
             "top_score":  round(scores[0], 3),
         }
@@ -278,17 +163,12 @@ def get_kb_candidates(
         raise
 
 
-# ── 🔧 DIAGNOSTIC ENDPOINT — checks if results are duplicate chunks ──
+# ── Diagnostic endpoint ───────────────────────────────────────────
 @app.post("/debug_search")
 def debug_search(
     body: CandidateRequest,
     x_api_key: str = Header(default=""),
 ):
-    """
-    Diagnostic endpoint to inspect raw chunks returned by Azure AI Search.
-    Helps determine if multiple chunks come from the same KB article.
-    Remove or protect this endpoint in production.
-    """
     if x_api_key != TOOL_API_KEY:
         raise HTTPException(status_code=401, detail="Invalid API key")
 
@@ -309,43 +189,32 @@ def debug_search(
                 fields="content_embedding",
             )],
             select=[
-                "content_id",
-                "document_title",
+                "kb_id",
                 "content_text",
+                "symptoms",
             ],
             top=TOP_K,
         )
 
-        raw_chunks = []
-        titles = []
+        raw_results = []
         for idx, r in enumerate(results, start=1):
             score = float(
-                r.get("@search.reranker_score")
-                or r.get("@search.score")
-                or 0.0
+                r.get("@search.reranker_score") or r.get("@search.score") or 0.0
             )
-            title = r.get("document_title", "")
-            titles.append(title)
             content_text = r.get("content_text") or ""
-            raw_chunks.append({
+            raw_results.append({
                 "rank":            idx,
                 "score":           round(score, 3),
-                "content_id":      r.get("content_id", ""),
-                "document_title":  title,
+                "kb_id":           r.get("kb_id", ""),
+                "symptoms":        r.get("symptoms") or [],
                 "content_preview": content_text[:200],
                 "content_length":  len(content_text),
             })
 
-        title_counts = Counter(titles)
-        duplicates = {t: c for t, c in title_counts.items() if c > 1}
-
         return {
-            "query":              description,
-            "total_chunks":       len(raw_chunks),
-            "unique_kb_articles": len(set(titles)),
-            "duplicate_titles":   duplicates,
-            "has_duplicates":     bool(duplicates),
-            "chunks":             raw_chunks,
+            "query":         description,
+            "total_results": len(raw_results),
+            "results":       raw_results,
         }
 
     except Exception as e:
