@@ -11,12 +11,13 @@ from azure.identity import DefaultAzureCredential
 from azure.keyvault.secrets import SecretClient
 
 # ── Non-sensitive config — stays in .env ──────────────────────────
-SEARCH_ENDPOINT  = os.environ["SEARCH_ENDPOINT"]
-SEARCH_INDEX     = os.environ["SEARCH_INDEX"]
-SPREAD_THRESHOLD = float(os.environ.get("SPREAD_THRESHOLD", "0.6"))
-MIN_SCORE        = float(os.environ.get("MIN_SCORE", "0.1"))
-TOP_K            = int(os.environ.get("TOP_K", "15"))   # ⬆️ raised to ensure we find enough unique KBs after dedup
-RETURN_K         = int(os.environ.get("RETURN_K", "3"))
+SEARCH_ENDPOINT       = os.environ["SEARCH_ENDPOINT"]
+SEARCH_INDEX          = os.environ["SEARCH_INDEX"]
+SEMANTIC_CONFIG_NAME  = os.environ["SEMANTIC_CONFIG_NAME"]
+SPREAD_THRESHOLD      = float(os.environ.get("SPREAD_THRESHOLD", "0.6"))
+MIN_SCORE             = float(os.environ.get("MIN_SCORE", "0.1"))
+TOP_K                 = int(os.environ.get("TOP_K", "15"))
+RETURN_K              = int(os.environ.get("RETURN_K", "3"))
 
 # ── Sensitive API keys — loaded from Azure Key Vault ──────────────
 try:
@@ -200,7 +201,7 @@ def get_kb_candidates(
         results = search.search(
             search_text=description,
             query_type=QueryType.SEMANTIC,
-            semantic_configuration_name="multimodal-rag-1778857242111-semantic-configuration",
+            semantic_configuration_name=SEMANTIC_CONFIG_NAME,
             vector_queries=[VectorizableTextQuery(
                 text=description,
                 k_nearest_neighbors=20,   # ⬆️ raised to pull more chunks for dedup
@@ -301,7 +302,7 @@ def debug_search(
         results = search.search(
             search_text=description,
             query_type=QueryType.SEMANTIC,
-            semantic_configuration_name="multimodal-rag-1778857242111-semantic-configuration",
+            semantic_configuration_name=SEMANTIC_CONFIG_NAME,
             vector_queries=[VectorizableTextQuery(
                 text=description,
                 k_nearest_neighbors=20,
