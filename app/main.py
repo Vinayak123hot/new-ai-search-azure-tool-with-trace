@@ -123,7 +123,7 @@ def get_kb_candidates(
                 "kb_id":                 r.get("kb_id", ""),
                 "summary":               (r.get("content_text") or "")[:300],
                 "key_symptoms":          r.get("symptoms") or [],
-                "guidance_troubleshoot": r.get("guidance_troubleshoot") or None,
+                "guidance_troubleshoot": r.get("guidance_troubleshoot"),
                 "score":                 round(score, 3),
             })
 
