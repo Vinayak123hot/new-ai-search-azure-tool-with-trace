@@ -3,7 +3,7 @@
   "info": {
     "title": "KB Candidates Tool",
     "version": "1.0.0",
-    "description": "Tool 1: Returns candidate Outlook KB articles with curated key_symptoms and spread metadata for agent triage."
+    "description": "Returns candidate KB articles with key_symptoms and spread metadata for agent triage."
   },
   "servers": [
     { "url": "https://teva-kb-candidate-gzdchud4gwfsaqad.southindia-01.azurewebsites.net" }
@@ -45,14 +45,14 @@
                       "items": {
                         "type": "object",
                         "properties": {
-                          "kb_id":           { "type": "string" },
-                          "kb_article_name": { "type": "string" },
-                          "summary":         { "type": "string" },
+                          "kb_id":                 { "type": "string" },
+                          "summary":               { "type": "string" },
                           "key_symptoms": {
                             "type": "array",
                             "items": { "type": "string" }
                           },
-                          "score": { "type": "number" }
+                          "guidance_troubleshoot": { "type": "boolean", "nullable": true },
+                          "score":                 { "type": "number" }
                         }
                       }
                     },
