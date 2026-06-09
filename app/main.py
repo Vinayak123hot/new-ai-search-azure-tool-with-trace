@@ -1,13 +1,19 @@
 import os
+import re
 import logging
+from datetime import datetime, timezone, timedelta
+from io import BytesIO
 from fastapi import FastAPI, HTTPException, Header, Request
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from azure.search.documents import SearchClient
 from azure.search.documents.models import VectorizableTextQuery, QueryType
 from azure.core.credentials import AzureKeyCredential
+from azure.core.exceptions import ResourceNotFoundError
 from azure.identity import DefaultAzureCredential
 from azure.keyvault.secrets import SecretClient
+from azure.storage.blob import BlobServiceClient, generate_blob_sas, BlobSasPermissions
+import docx as python_docx
 
 # ── Non-sensitive config — stays in .env ──────────────────────────
 SEARCH_ENDPOINT       = os.environ["SEARCH_ENDPOINT"]
@@ -26,6 +32,10 @@ try:
 
     SEARCH_API_KEY = kv_client.get_secret("search-api-key").value
     TOOL_API_KEY   = kv_client.get_secret("tool-api-key").value
+
+    BLOB_ACCOUNT_URL    = os.environ["BLOB_ACCOUNT_URL"]
+    BLOB_CONTAINER_NAME = os.environ["BLOB_CONTAINER_NAME"]
+    blob_service        = BlobServiceClient(account_url=BLOB_ACCOUNT_URL, credential=credential)
 
     print("✅ API keys successfully loaded from Key Vault")
 
@@ -51,9 +61,70 @@ search = SearchClient(SEARCH_ENDPOINT, SEARCH_INDEX, AzureKeyCredential(SEARCH_A
 app = FastAPI(title="KB Candidates Tool")
 
 
-# ── Request model ─────────────────────────────────────────────────
+# ── Request models ────────────────────────────────────────────────
 class CandidateRequest(BaseModel):
     description: str
+
+class GuidanceRequest(BaseModel):
+    kb_id: str
+
+
+# ── KB docx parser ────────────────────────────────────────────────
+_SKIP_PREFIXES  = ("kb id:", "guidance troubleshoot:")
+_KNOWN_SECTIONS = ("user experience", "symptoms:", "cause:", "resolution:")
+_OPTION_RE      = re.compile(r"^option\s*\d+", re.IGNORECASE)
+
+def _parse_kb_docx(doc_bytes: bytes) -> dict:
+    doc = python_docx.Document(BytesIO(doc_bytes))
+
+    title, environment, note = "", "", ""
+    sections: list = []
+    current_section = None
+    first_normal = True
+
+    for para in doc.paragraphs:
+        text = para.text.strip()
+        if not text:
+            continue
+
+        tl      = text.lower()
+        is_list = para.style.name == "List Paragraph"
+
+        if any(tl.startswith(p) for p in _SKIP_PREFIXES):
+            continue
+
+        if is_list:
+            if current_section is None:
+                current_section = {"heading": "Resolution Steps", "steps": []}
+                sections.append(current_section)
+            current_section["steps"].append(text)
+            continue
+
+        if first_normal:
+            title = text
+            first_normal = False
+            continue
+
+        if tl.startswith("environment:"):
+            environment = text.split(":", 1)[1].strip()
+            continue
+
+        if tl.startswith("note:"):
+            note = text.split(":", 1)[1].strip()
+            continue
+
+        # Structural dividers (symptoms, cause, resolution headers) — skip them
+        # and the Normal paragraph that immediately follows each one is their body text,
+        # which is also skipped by falling through to the end of this loop.
+        if any(tl.startswith(h) for h in _KNOWN_SECTIONS):
+            current_section = None
+            continue
+
+        if _OPTION_RE.match(tl):
+            current_section = {"heading": text.rstrip(":"), "steps": []}
+            sections.append(current_section)
+
+    return {"title": title, "environment": environment, "note": note, "sections": sections}
 
 
 # ── Helper ────────────────────────────────────────────────────────
@@ -161,6 +232,67 @@ def get_kb_candidates(
     except Exception as e:
         logger.exception("Search failed")
         raise
+
+
+# ── KB Guidance endpoint ──────────────────────────────────────────
+@app.post("/get_kb_guidance")
+def get_kb_guidance(
+    body: GuidanceRequest,
+    x_api_key: str = Header(default=""),
+):
+    if x_api_key != TOOL_API_KEY:
+        raise HTTPException(status_code=401, detail="Invalid API key")
+
+    kb_id = (body.kb_id or "").strip()
+    if not kb_id:
+        raise HTTPException(status_code=400, detail="'kb_id' is required")
+
+    logger.info("get_kb_guidance | kb_id=%s", kb_id)
+    blob_name = f"{kb_id}.docx"
+
+    try:
+        doc_bytes = (
+            blob_service
+            .get_blob_client(container=BLOB_CONTAINER_NAME, blob=blob_name)
+            .download_blob()
+            .readall()
+        )
+    except ResourceNotFoundError:
+        raise HTTPException(status_code=404, detail=f"KB article '{kb_id}' not found in storage.")
+    except Exception:
+        logger.exception("Blob download failed: %s", blob_name)
+        raise
+
+    parsed = _parse_kb_docx(doc_bytes)
+
+    # Generate a 2-hour read-only SAS URL using Managed Identity (user delegation key).
+    # Requires Storage Blob Delegator role on the App Service identity.
+    document_url = None
+    try:
+        now    = datetime.now(timezone.utc)
+        expiry = now + timedelta(hours=2)
+        udk    = blob_service.get_user_delegation_key(key_start_time=now, key_expiry_time=expiry)
+        sas    = generate_blob_sas(
+            account_name=blob_service.account_name,
+            container_name=BLOB_CONTAINER_NAME,
+            blob_name=blob_name,
+            user_delegation_key=udk,
+            permission=BlobSasPermissions(read=True),
+            expiry=expiry,
+        )
+        document_url = f"{BLOB_ACCOUNT_URL.rstrip('/')}/{BLOB_CONTAINER_NAME}/{blob_name}?{sas}"
+    except Exception:
+        logger.warning("Could not generate SAS URL for %s — returning without link", blob_name)
+
+    return {
+        "kb_id":         kb_id,
+        "title":         parsed["title"],
+        "environment":   parsed["environment"],
+        "note":          parsed["note"],
+        "sections":      parsed["sections"],
+        "document_url":  document_url,
+        "document_name": blob_name,
+    }
 
 
 # ── Diagnostic endpoint ───────────────────────────────────────────

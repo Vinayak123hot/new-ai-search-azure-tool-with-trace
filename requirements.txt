@@ -5,3 +5,5 @@ azure-search-documents==11.5.2
 azure-core==1.32.0
 azure-identity==1.17.1
 azure-keyvault-secrets==4.8.0
+azure-storage-blob==12.22.0
+python-docx==1.1.2

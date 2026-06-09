@@ -9,6 +9,68 @@
     { "url": "https://teva-kb-candidate-gzdchud4gwfsaqad.southindia-01.azurewebsites.net" }
   ],
   "paths": {
+    "/get_kb_guidance": {
+      "post": {
+        "operationId": "get_kb_guidance",
+        "summary": "Fetch full resolution steps for a KB article from blob storage",
+        "description": "Call this ONLY when the top candidate returned by get_kb_candidates has guidance_troubleshoot=true. Pass the kb_id of that top candidate. Returns the structured resolution steps (title, note, sections with numbered steps) and a time-limited read-only document_url the user can click to view the original file. Present the steps to the user as a clearly formatted numbered list grouped by section heading. Always show the document_url as a clickable link labelled 'View original document'.",
+        "security": [{ "ApiKeyAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["kb_id"],
+                "properties": {
+                  "kb_id": {
+                    "type": "string",
+                    "description": "The KB article ID from the top candidate, e.g. KB0010863."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Structured resolution steps and a read-only document link",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "kb_id":         { "type": "string" },
+                    "title":         { "type": "string" },
+                    "environment":   { "type": "string" },
+                    "note":          { "type": "string" },
+                    "sections": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "heading": { "type": "string" },
+                          "steps": {
+                            "type": "array",
+                            "items": { "type": "string" }
+                          }
+                        }
+                      }
+                    },
+                    "document_url":  { "type": "string", "nullable": true },
+                    "document_name": { "type": "string" }
+                  }
+                }
+              }
+            }
+          },
+          "404": { "description": "KB article not found in blob storage" },
+          "401": { "description": "Invalid or missing API key" },
+          "400": { "description": "Missing kb_id field" },
+          "500": { "description": "Blob download or parse error" }
+        }
+      }
+    },
     "/get_kb_candidates": {
       "post": {
         "operationId": "get_kb_candidates",
