@@ -148,7 +148,7 @@ async def global_exception_handler(request: Request, exc: Exception):
 # ── Health check ──────────────────────────────────────────────────
 @app.get("/healthz")
 def health():
-    return {"status": "ok", "tool": "get_kb_candidates"}
+    return {"status": "ok", "tools": ["get_kb_candidates", "get_kb_guidance"]}
 
 
 # ── Main endpoint ─────────────────────────────────────────────────
