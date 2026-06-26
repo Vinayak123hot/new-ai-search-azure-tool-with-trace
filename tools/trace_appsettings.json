@@ -1,0 +1,18 @@
+[
+  { "name": "AZURE_KEY_VAULT_URL", "value": "https://vinny-kb-tool-vault1.vault.azure.net", "slotSetting": false },
+  { "name": "BLOB_ACCOUNT_URL", "value": "https://tevablob.blob.core.windows.net", "slotSetting": false },
+  { "name": "BLOB_CONTAINER_NAME", "value": "rag-kb-articles", "slotSetting": false },
+  { "name": "HIGH_CONFIDENCE", "value": "3.0", "slotSetting": false },
+  { "name": "MIN_SCORE", "value": "1.9", "slotSetting": false },
+  { "name": "REQUIRE_API_KEY", "value": "false", "slotSetting": false },
+  { "name": "RETURN_K", "value": "3", "slotSetting": false },
+  { "name": "SCM_DISABLE_DIRECT_COMPRESSION", "value": "true", "slotSetting": false },
+  { "name": "SEARCH_ENDPOINT", "value": "https://ai-search-uc-docs.search.windows.net", "slotSetting": false },
+  { "name": "SEARCH_INDEX", "value": "teva_kb", "slotSetting": false },
+  { "name": "SEMANTIC_CONFIG_NAME", "value": "my-semantic-config", "slotSetting": false },
+  { "name": "SPREAD_THRESHOLD", "value": "0.4", "slotSetting": false },
+  { "name": "TOP_K", "value": "10", "slotSetting": false },
+  { "name": "WEBSITES_PORT", "value": "8000", "slotSetting": false },
+  { "name": "TRACE_LOG_DIR", "value": "/home/LogFiles/kbtrace", "slotSetting": false },
+  { "name": "SCM_DO_BUILD_DURING_DEPLOYMENT", "value": "true", "slotSetting": false }
+]

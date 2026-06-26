@@ -1,0 +1,673 @@
+{
+  "summary": {
+    "model": "gpt-5.4-mini",
+    "total": 76,
+    "in_kb": 66,
+    "out_kb": 10,
+    "end_to_end_top1": "93.9%",
+    "out_of_kb_correct": "80.0%",
+    "needed_clarification": "0/66"
+  },
+  "misses": [
+    {
+      "query": "my outlook profile is broken how do I rebuild it",
+      "expected": "KB0010863",
+      "intent": "HOW_TO",
+      "predicted": "KB0010265",
+      "rounds": 0,
+      "final_excerpt": "KB_Article_name:       KB0010265 Matching Score:        2.968 guidance_troubleshoot: true Issue Summary:         Outlook profile is broken and the user wants to rebuild the Outlook profile. --- Here a"
+    },
+    {
+      "query": "nothing happens when I click the outlook icon",
+      "expected": "KB0013608",
+      "intent": "ISSUE",
+      "predicted": "KB0010265",
+      "rounds": 0,
+      "final_excerpt": "KB_Article_name:       KB0010265 Matching Score:        2.747 guidance_troubleshoot: true Issue Summary:         Outlook will not open when the Outlook icon is clicked; nothing happens on launch, with"
+    },
+    {
+      "query": "outlook does not launch when I double click it",
+      "expected": "KB0013608",
+      "intent": "ISSUE",
+      "predicted": "KB0010265",
+      "rounds": 1,
+      "final_excerpt": "KB_Article_name:       KB0010265 Matching Score:        2.919 guidance_troubleshoot: true Issue Summary:         Outlook does not launch when double-clicked and has not opened since yesterday on the d"
+    },
+    {
+      "query": "my outlook app refuses to open",
+      "expected": "KB0013608",
+      "intent": "ISSUE",
+      "predicted": "KB0010265",
+      "rounds": 0,
+      "final_excerpt": "KB_Article_name:       KB0010265 Matching Score:        3.316 guidance_troubleshoot: true Issue Summary:         Outlook will not open and appears to get stuck on the loading screen or show an error m"
+    }
+  ],
+  "false_positives": [
+    {
+      "query": "set up out of office auto reply",
+      "expected": null,
+      "intent": "HOW_TO",
+      "predicted": "KB0010863",
+      "rounds": 0,
+      "final_excerpt": "KB_Article_name:       KB0010863 Matching Score:        2.059 guidance_troubleshoot: false Issue Summary:         The user wants to set up an automatic out-of-office reply in Outlook. Call Orchestrato"
+    },
+    {
+      "query": "how do I create a rule to move emails to a folder",
+      "expected": null,
+      "intent": "HOW_TO",
+      "predicted": "KB0015711",
+      "rounds": 1,
+      "final_excerpt": "KB_Article_name:       KB0015711 Matching Score:        1.905 guidance_troubleshoot: true Issue Summary:         The user wants to create an Outlook rule to move incoming emails to a folder. Here are "
+    }
+  ],
+  "results": [
+    {
+      "query": "outlook is stuck on the loading screen",
+      "expected": "KB0010265",
+      "intent": "ISSUE",
+      "predicted": "KB0010265",
+      "rounds": 0,
+      "final_excerpt": "KB_Article_name:       KB0010265 Matching Score:        3.597 guidance_troubleshoot: true Issue Summary:         Outlook is stuck on the loading screen and may eventually show an error message. This i"
+    },
+    {
+      "query": "my outlook freezes when it starts and then shows an error",
+      "expected": "KB0010265",
+      "intent": "ISSUE",
+      "predicted": "KB0010265",
+      "rounds": 0,
+      "final_excerpt": "KB_Article_name:       KB0010265 Matching Score:        3.183 guidance_troubleshoot: true Issue Summary:         Outlook freezes when it starts and then shows an error message. The issue has been seen"
+    },
+    {
+      "query": "outlook hangs on loading profile and is not responding",
+      "expected": "KB0010265",
+      "intent": "ISSUE",
+      "predicted": "KB0010265",
+      "rounds": 0,
+      "final_excerpt": "KB_Article_name:       KB0010265 Matching Score:        3.187 guidance_troubleshoot: true Issue Summary:         Outlook hangs on the loading profile screen and becomes not responding. --- Here are th"
+    },
+    {
+      "query": "outlook is really slow and keeps freezing",
+      "expected": "KB0010265",
+      "intent": "ISSUE",
+      "predicted": "KB0010265",
+      "rounds": 0,
+      "final_excerpt": "KB_Article_name:       KB0010265 Matching Score:        3.27 guidance_troubleshoot: true Issue Summary:         Outlook is very slow and keeps freezing. The issue appears to involve Outlook performanc"
+    },
+    {
+      "query": "otulook stuck loading then crashes with an error",
+      "expected": "KB0010265",
+      "intent": "ISSUE",
+      "predicted": "KB0010265",
+      "rounds": 0,
+      "final_excerpt": "KB_Article_name:       KB0010265 Matching Score:        3.509 guidance_troubleshoot: true Issue Summary:         Outlook is stuck on the loading screen and eventually crashes with an error when trying"
+    },
+    {
+      "query": "outlook performance is terrible it freezes constantly",
+      "expected": "KB0010265",
+      "intent": "ISSUE",
+      "predicted": "KB0010265",
+      "rounds": 1,
+      "final_excerpt": "KB_Article_name:       KB0010265 Matching Score:        3.899 guidance_troubleshoot: true Issue Summary:         Outlook's loading screen gets stuck and eventually shows an error message. --- Here are"
+    },
+    {
+      "query": "the outlook window opens but just hangs on loading",
+      "expected": "KB0010265",
+      "intent": "ISSUE",
+      "predicted": "KB0010265",
+      "rounds": 0,
+      "final_excerpt": "KB_Article_name:       KB0010265 Matching Score:        3.392 guidance_troubleshoot: true Issue Summary:         Outlook opens but hangs on the loading screen and does not fully load. No device type w"
+    },
+    {
+      "query": "outlook not responding stuck on starting screen",
+      "expected": "KB0010265",
+      "intent": "ISSUE",
+      "predicted": "KB0010265",
+      "rounds": 0,
+      "final_excerpt": "KB_Article_name:       KB0010265 Matching Score:        3.558 guidance_troubleshoot: true Issue Summary:         Outlook is not responding and is stuck on the starting/loading screen. --- Here are the"
+    },
+    {
+      "query": "email client is frozen on the splash screen",
+      "expected": "KB0010265",
+      "intent": "ISSUE",
+      "predicted": "KB0010265",
+      "rounds": 0,
+      "final_excerpt": "KB_Article_name:       KB0010265 Matching Score:        3.204 guidance_troubleshoot: true Issue Summary:         Outlook is frozen on the splash screen and the loading screen gets stuck without procee"
+    },
+    {
+      "query": "outlook takes forever to load and errors out",
+      "expected": "KB0010265",
+      "intent": "ISSUE",
+      "predicted": "KB0010265",
+      "rounds": 0,
+      "final_excerpt": "KB_Article_name:       KB0010265 Matching Score:        3.26 guidance_troubleshoot: true Issue Summary:         Outlook takes a long time to load and eventually shows an error message while opening. -"
+    },
+    {
+      "query": "how do I rebuild my outlook profile",
+      "expected": "KB0010863",
+      "intent": "HOW_TO",
+      "predicted": "KB0010863",
+      "rounds": 0,
+      "final_excerpt": "KB_Article_name:       KB0010863 Matching Score:        3.469 guidance_troubleshoot: false Issue Summary:         The user wants to rebuild their Outlook profile. Call Orchestrator:     True"
+    },
+    {
+      "query": "steps to recreate my OST file",
+      "expected": "KB0010863",
+      "intent": "HOW_TO",
+      "predicted": "KB0010863",
+      "rounds": 1,
+      "final_excerpt": "KB_Article_name:       KB0010863 Matching Score:        3.886 guidance_troubleshoot: false Issue Summary:         The user wants to rebuild an OST profile in Outlook. Call Orchestrator:     True"
+    },
+    {
+      "query": "how to rebuild a corrupt outlook profile",
+      "expected": "KB0010863",
+      "intent": "HOW_TO",
+      "predicted": "KB0010863",
+      "rounds": 1,
+      "final_excerpt": "KB_Article_name:       KB0010863 Matching Score:        3.886 guidance_troubleshoot: false Issue Summary:         The user wants to rebuild an OST profile in Outlook. Call Orchestrator:     True"
+    },
+    {
+      "query": "i need to recreate my mail profile in outlook",
+      "expected": "KB0010863",
+      "intent": "HOW_TO",
+      "predicted": "KB0010863",
+      "rounds": 0,
+      "final_excerpt": "KB_Article_name:       KB0010863 Matching Score:        2.99 guidance_troubleshoot: false Issue Summary:         The user wants to rebuild an existing Outlook profile. Call Orchestrator:     True"
+    },
+    {
+      "query": "how can I rebuild the ost data file",
+      "expected": "KB0010863",
+      "intent": "HOW_TO",
+      "predicted": "KB0010863",
+      "rounds": 0,
+      "final_excerpt": "KB_Article_name:       KB0010863 Matching Score:        3.14 guidance_troubleshoot: false Issue Summary:         The user wants to rebuild the OST data file/profile in Outlook. Call Orchestrator:     "
+    },
+    {
+      "query": "rebuild user profile outlook how to",
+      "expected": "KB0010863",
+      "intent": "HOW_TO",
+      "predicted": "KB0010863",
+      "rounds": 0,
+      "final_excerpt": "KB_Article_name:       KB0010863 Matching Score:        3.522 guidance_troubleshoot: false Issue Summary:         The user wants to rebuild an Outlook user profile, specifically an OST profile in Outl"
+    },
+    {
+      "query": "what are the steps to set up a fresh outlook profile",
+      "expected": "KB0010863",
+      "intent": "HOW_TO",
+      "predicted": "KB0010863",
+      "rounds": 1,
+      "final_excerpt": "KB_Article_name:       KB0010863 Matching Score:        3.886 guidance_troubleshoot: false Issue Summary:         The user wants to rebuild an OST profile in Outlook. Call Orchestrator:     True"
+    },
+    {
+      "query": "my outlook profile is broken how do I rebuild it",
+      "expected": "KB0010863",
+      "intent": "HOW_TO",
+      "predicted": "KB0010265",
+      "rounds": 0,
+      "final_excerpt": "KB_Article_name:       KB0010265 Matching Score:        2.968 guidance_troubleshoot: true Issue Summary:         Outlook profile is broken and the user wants to rebuild the Outlook profile. --- Here a"
+    },
+    {
+      "query": "the phishing add-in got disabled",
+      "expected": "KB0010865",
+      "intent": "ISSUE",
+      "predicted": "KB0010865",
+      "rounds": 0,
+      "final_excerpt": "KB_Article_name:       KB0010865 Matching Score:        3.68 guidance_troubleshoot: true Issue Summary:         The Outlook phishing add-in has been automatically disabled.  Here are the resolution st"
+    },
+    {
+      "query": "my report spam button disappeared from outlook",
+      "expected": "KB0010865",
+      "intent": "ISSUE",
+      "predicted": "KB0010865",
+      "rounds": 0,
+      "final_excerpt": "KB_Article_name:       KB0010865 Matching Score:        2.901 guidance_troubleshoot: true Issue Summary:         The Report Spam button disappeared from Outlook, matching the behavior of the Phishing "
+    },
+    {
+      "query": "how do I re-enable an add-in that was automatically disabled",
+      "expected": "KB0010865",
+      "intent": "HOW_TO",
+      "predicted": "KB0010865",
+      "rounds": 0,
+      "final_excerpt": "KB_Article_name:       KB0010865 Matching Score:        3.334 guidance_troubleshoot: true Issue Summary:         The user wants to re-enable an Outlook add-in that was automatically disabled.  Here ar"
+    },
+    {
+      "query": "report phishing addin is greyed out",
+      "expected": "KB0010865",
+      "intent": "ISSUE",
+      "predicted": "KB0010865",
+      "rounds": 0,
+      "final_excerpt": "KB_Article_name:       KB0010865 Matching Score:        3.109 guidance_troubleshoot: true Issue Summary:         The Report Phishing add-in in Microsoft Outlook is greyed out, consistent with an auto-"
+    },
+    {
+      "query": "outlook disabled my phishing reporting add in",
+      "expected": "KB0010865",
+      "intent": "ISSUE",
+      "predicted": "KB0010865",
+      "rounds": 0,
+      "final_excerpt": "KB_Article_name:       KB0010865 Matching Score:        3.692 guidance_troubleshoot: true Issue Summary:         Outlook disabled the phishing reporting add-in automatically.  Here are the resolution "
+    },
+    {
+      "query": "the report message add-in keeps getting turned off",
+      "expected": "KB0010865",
+      "intent": "ISSUE",
+      "predicted": "KB0010865",
+      "rounds": 1,
+      "final_excerpt": "KB_Article_name:       KB0010865 Matching Score:        3.791 guidance_troubleshoot: true Issue Summary:         The Phishing / Report Spam add-in in Outlook has been automatically disabled, and the u"
+    },
+    {
+      "query": "how to turn the auto-disabled spam add-in back on",
+      "expected": "KB0010865",
+      "intent": "HOW_TO",
+      "predicted": "KB0010865",
+      "rounds": 0,
+      "final_excerpt": "KB_Article_name:       KB0010865 Matching Score:        3.679 guidance_troubleshoot: true Issue Summary:         The user wants to turn the auto-disabled spam add-in back on in Outlook.  Here are the "
+    },
+    {
+      "query": "phishing button missing from my ribbon",
+      "expected": "KB0010865",
+      "intent": "ISSUE",
+      "predicted": "KB0010865",
+      "rounds": 0,
+      "final_excerpt": "KB_Article_name:       KB0010865 Matching Score:        2.32 guidance_troubleshoot: true Issue Summary:         The phishing/report spam add-in is missing from the Outlook ribbon, consistent with the "
+    },
+    {
+      "query": "outlook won't open at all",
+      "expected": "KB0013608",
+      "intent": "ISSUE",
+      "predicted": "KB0013608",
+      "rounds": 0,
+      "final_excerpt": "KB_Article_name:       KB0013608 Matching Score:        3.119 guidance_troubleshoot: false Issue Summary:         Outlook will not open at all. Call Orchestrator:     True"
+    },
+    {
+      "query": "nothing happens when I click the outlook icon",
+      "expected": "KB0013608",
+      "intent": "ISSUE",
+      "predicted": "KB0010265",
+      "rounds": 0,
+      "final_excerpt": "KB_Article_name:       KB0010265 Matching Score:        2.747 guidance_troubleshoot: true Issue Summary:         Outlook will not open when the Outlook icon is clicked; nothing happens on launch, with"
+    },
+    {
+      "query": "i can't get outlook to start",
+      "expected": "KB0013608",
+      "intent": "ISSUE",
+      "predicted": "KB0013608",
+      "rounds": 1,
+      "final_excerpt": "KB_Article_name:       KB0013608 Matching Score:        3.016 guidance_troubleshoot: false Issue Summary:         Outlook will not start or open, and the issue began yesterday. Call Orchestrator:     "
+    },
+    {
+      "query": "outlook does not launch when I double click it",
+      "expected": "KB0013608",
+      "intent": "ISSUE",
+      "predicted": "KB0010265",
+      "rounds": 1,
+      "final_excerpt": "KB_Article_name:       KB0010265 Matching Score:        2.919 guidance_troubleshoot: true Issue Summary:         Outlook does not launch when double-clicked and has not opened since yesterday on the d"
+    },
+    {
+      "query": "unable to open microsoft outlook",
+      "expected": "KB0013608",
+      "intent": "ISSUE",
+      "predicted": "KB0013608",
+      "rounds": 1,
+      "final_excerpt": "KB_Article_name:       KB0013608 Matching Score:        3.822 guidance_troubleshoot: false Issue Summary:         Microsoft Outlook will not open. Call Orchestrator:     True"
+    },
+    {
+      "query": "outlook will not start up",
+      "expected": "KB0013608",
+      "intent": "ISSUE",
+      "predicted": "KB0013608",
+      "rounds": 0,
+      "final_excerpt": "KB_Article_name:       KB0013608 Matching Score:        3.466 guidance_troubleshoot: false Issue Summary:         Microsoft Outlook will not start up or open. Call Orchestrator:     True"
+    },
+    {
+      "query": "my outlook app refuses to open",
+      "expected": "KB0013608",
+      "intent": "ISSUE",
+      "predicted": "KB0010265",
+      "rounds": 0,
+      "final_excerpt": "KB_Article_name:       KB0010265 Matching Score:        3.316 guidance_troubleshoot: true Issue Summary:         Outlook will not open and appears to get stuck on the loading screen or show an error m"
+    },
+    {
+      "query": "clicking outlook does nothing it never opens",
+      "expected": "KB0013608",
+      "intent": "ISSUE",
+      "predicted": "KB0013608",
+      "rounds": 1,
+      "final_excerpt": "KB_Article_name:       KB0013608 Matching Score:        2.997 guidance_troubleshoot: false Issue Summary:         Microsoft Outlook will not open at all; clicking Outlook does nothing and it never ope"
+    },
+    {
+      "query": "outlook crashes when I click the calendar",
+      "expected": "KB0015622",
+      "intent": "ISSUE",
+      "predicted": "KB0015622",
+      "rounds": 0,
+      "final_excerpt": "KB_Article_name:       KB0015622 Matching Score:        3.554 guidance_troubleshoot: false Issue Summary:         Outlook crashes after clicking the Calendar tab. Call Orchestrator:     True"
+    },
+    {
+      "query": "every time I open calendar outlook closes",
+      "expected": "KB0015622",
+      "intent": "ISSUE",
+      "predicted": "KB0015622",
+      "rounds": 1,
+      "final_excerpt": "KB_Article_name:       KB0015622 Matching Score:        3.707 guidance_troubleshoot: false Issue Summary:         Outlook crashes after clicking the Calendar tab. The issue started yesterday. Call Orc"
+    },
+    {
+      "query": "the calendar tab makes outlook crash",
+      "expected": "KB0015622",
+      "intent": "ISSUE",
+      "predicted": "KB0015622",
+      "rounds": 0,
+      "final_excerpt": "KB_Article_name:       KB0015622 Matching Score:        3.393 guidance_troubleshoot: false Issue Summary:         Outlook crashes after clicking the Calendar tab. Call Orchestrator:     True"
+    },
+    {
+      "query": "outlook shuts down whenever I go to calendar",
+      "expected": "KB0015622",
+      "intent": "ISSUE",
+      "predicted": "KB0015622",
+      "rounds": 0,
+      "final_excerpt": " KB_Article_name:       KB0015622 Matching Score:        2.832 guidance_troubleshoot: false Issue Summary:         Outlook crashes after clicking on the Calendar tab. Call Orchestrator:     True"
+    },
+    {
+      "query": "clicking calendar crashes my outlook",
+      "expected": "KB0015622",
+      "intent": "ISSUE",
+      "predicted": "KB0015622",
+      "rounds": 0,
+      "final_excerpt": "KB_Article_name:       KB0015622 Matching Score:        3.582 guidance_troubleshoot: false Issue Summary:         Outlook crashes after clicking the Calendar tab. Call Orchestrator:     True"
+    },
+    {
+      "query": "outlook keeps crashing on the calendar view",
+      "expected": "KB0015622",
+      "intent": "ISSUE",
+      "predicted": "KB0015622",
+      "rounds": 0,
+      "final_excerpt": "KB_Article_name:       KB0015622 Matching Score:        3.194 guidance_troubleshoot: false Issue Summary:         Outlook crashes after clicking the Calendar tab. Call Orchestrator:     True"
+    },
+    {
+      "query": "calendar tab crash in outlook",
+      "expected": "KB0015622",
+      "intent": "ISSUE",
+      "predicted": "KB0015622",
+      "rounds": 0,
+      "final_excerpt": "KB_Article_name:       KB0015622 Matching Score:        3.59 guidance_troubleshoot: false Issue Summary:         Outlook crashes after clicking the Calendar tab. Call Orchestrator:     True"
+    },
+    {
+      "query": "outlook dies when I switch to calendar",
+      "expected": "KB0015622",
+      "intent": "ISSUE",
+      "predicted": "KB0015622",
+      "rounds": 0,
+      "final_excerpt": "KB_Article_name:       KB0015622 Matching Score:        2.876 guidance_troubleshoot: false Issue Summary:         Outlook crashes when switching to the Calendar view. Call Orchestrator:     True "
+    },
+    {
+      "query": "my emails are stuck in the outbox",
+      "expected": "KB0015711",
+      "intent": "ISSUE",
+      "predicted": "KB0015711",
+      "rounds": 0,
+      "final_excerpt": "KB_Article_name:       KB0015711 Matching Score:        3.328 guidance_troubleshoot: true Issue Summary:         Outlook emails are stuck in the Outbox and do not send immediately; they remain in the "
+    },
+    {
+      "query": "email won't send it just stays in outbox",
+      "expected": "KB0015711",
+      "intent": "ISSUE",
+      "predicted": "KB0015711",
+      "rounds": 0,
+      "final_excerpt": "KB_Article_name:       KB0015711 Matching Score:        3.227 guidance_troubleshoot: true Issue Summary:         Outlook emails will not send and remain stuck in the Outbox. Here are the resolution st"
+    },
+    {
+      "query": "messages sitting in outbox not going out",
+      "expected": "KB0015711",
+      "intent": "ISSUE",
+      "predicted": "KB0015711",
+      "rounds": 0,
+      "final_excerpt": "KB_Article_name:       KB0015711 Matching Score:        3.201 guidance_troubleshoot: true Issue Summary:         Outlook email messages are stuck in the Outbox and are not sending immediately. Here ar"
+    },
+    {
+      "query": "outlook not sending mail stuck in outbox",
+      "expected": "KB0015711",
+      "intent": "ISSUE",
+      "predicted": "KB0015711",
+      "rounds": 0,
+      "final_excerpt": "KB_Article_name:       KB0015711 Matching Score:        3.194 guidance_troubleshoot: true Issue Summary:         Outlook email is not sending and messages are stuck in the Outbox. Here are the resolut"
+    },
+    {
+      "query": "my mail only sends after I hit send receive",
+      "expected": "KB0015711",
+      "intent": "ISSUE",
+      "predicted": "KB0015711",
+      "rounds": 1,
+      "final_excerpt": "KB_Article_name:       KB0015711 Matching Score:        3.777 guidance_troubleshoot: true Issue Summary:         Outlook email stays in the Outbox until Send/Receive is manually triggered, so messages"
+    },
+    {
+      "query": "emails are not sending immediately they wait in outbox",
+      "expected": "KB0015711",
+      "intent": "ISSUE",
+      "predicted": "KB0015711",
+      "rounds": 0,
+      "final_excerpt": "KB_Article_name:       KB0015711 Matching Score:        3.376 guidance_troubleshoot: true Issue Summary:         Outlook emails are not sending immediately and remain in the Outbox until a Send/Receiv"
+    },
+    {
+      "query": "outbox messages won't deliver",
+      "expected": "KB0015711",
+      "intent": "ISSUE",
+      "predicted": "KB0015711",
+      "rounds": 0,
+      "final_excerpt": "KB_Article_name:       KB0015711 Matching Score:        3.029 guidance_troubleshoot: true Issue Summary:         Outlook outbox messages are not delivering and remain stuck in the Outbox until sent. -"
+    },
+    {
+      "query": "sent email stuck and not leaving outbox",
+      "expected": "KB0015711",
+      "intent": "ISSUE",
+      "predicted": "KB0015711",
+      "rounds": 0,
+      "final_excerpt": "KB_Article_name:       KB0015711 Matching Score:        3.041 guidance_troubleshoot: true Issue Summary:         Sent email is stuck in the Outbox and does not leave when trying to send.  Here are the"
+    },
+    {
+      "query": "I don't get meeting notifications",
+      "expected": "KB0016162",
+      "intent": "ISSUE",
+      "predicted": "KB0016162",
+      "rounds": 0,
+      "final_excerpt": "KB_Article_name:       KB0016162 Matching Score:        3.094 guidance_troubleshoot: false Issue Summary:         Outlook meeting notifications are not arriving, and meetings go straight to the Calend"
+    },
+    {
+      "query": "not receiving meeting request alerts",
+      "expected": "KB0016162",
+      "intent": "ISSUE",
+      "predicted": "KB0016162",
+      "rounds": 0,
+      "final_excerpt": "KB_Article_name:       KB0016162 Matching Score:        3.087 guidance_troubleshoot: false Issue Summary:         Meeting request alerts are not being received in Outlook, and meetings are going strai"
+    },
+    {
+      "query": "meetings go straight to my calendar without notifying me",
+      "expected": "KB0016162",
+      "intent": "ISSUE",
+      "predicted": "KB0016162",
+      "rounds": 0,
+      "final_excerpt": "KB_Article_name:       KB0016162 Matching Score:        3.285 guidance_troubleshoot: false Issue Summary:         Outlook meetings are going straight to the calendar without any notification, and meet"
+    },
+    {
+      "query": "no popup when I get a meeting invite",
+      "expected": "KB0016162",
+      "intent": "ISSUE",
+      "predicted": "KB0016162",
+      "rounds": 1,
+      "final_excerpt": "KB_Article_name:       KB0016162 Matching Score:        2.601 guidance_troubleshoot: false Issue Summary:         Outlook meeting invite notifications are not showing a popup when a meeting invite is "
+    },
+    {
+      "query": "meeting invites don't show any notification",
+      "expected": "KB0016162",
+      "intent": "ISSUE",
+      "predicted": "KB0016162",
+      "rounds": 0,
+      "final_excerpt": "KB_Article_name:       KB0016162 Matching Score:        3.384 guidance_troubleshoot: false Issue Summary:         Meeting invites are going straight to the calendar without any notification, with no m"
+    },
+    {
+      "query": "I'm not notified about new meeting requests",
+      "expected": "KB0016162",
+      "intent": "ISSUE",
+      "predicted": "KB0016162",
+      "rounds": 0,
+      "final_excerpt": "KB_Article_name:       KB0016162 Matching Score:        3.338 guidance_troubleshoot: false Issue Summary:         Outlook is not receiving meeting request notifications, and meetings go straight to th"
+    },
+    {
+      "query": "calendar invites are added silently with no alert",
+      "expected": "KB0016162",
+      "intent": "ISSUE",
+      "predicted": "KB0016162",
+      "rounds": 1,
+      "final_excerpt": "KB_Article_name:       KB0016162 Matching Score:        3.265 guidance_troubleshoot: false Issue Summary:         Meeting requests are going straight to the Calendar without any notification or alert "
+    },
+    {
+      "query": "missing notifications for meeting requests",
+      "expected": "KB0016162",
+      "intent": "ISSUE",
+      "predicted": "KB0016162",
+      "rounds": 0,
+      "final_excerpt": "KB_Article_name:       KB0016162 Matching Score:        3.075 guidance_troubleshoot: false Issue Summary:         Outlook is missing notifications for meeting requests, with meetings going straight to"
+    },
+    {
+      "query": "how to turn off work offline in outlook",
+      "expected": "KB0016493",
+      "intent": "HOW_TO",
+      "predicted": "KB0016493",
+      "rounds": 0,
+      "final_excerpt": "KB_Article_name:       KB0016493 Matching Score:        3.609 guidance_troubleshoot: true Issue Summary:         The user wants to turn off Work Offline mode in Outlook. --- Here are the resolution st"
+    },
+    {
+      "query": "outlook says working offline how do I fix",
+      "expected": "KB0016493",
+      "intent": "ISSUE",
+      "predicted": "KB0016493",
+      "rounds": 0,
+      "final_excerpt": "KB_Article_name:       KB0016493 Matching Score:        2.744 guidance_troubleshoot: true Issue Summary:         Outlook shows Working Offline and needs to be switched back online.  Here are the resol"
+    },
+    {
+      "query": "disable work offline mode",
+      "expected": "KB0016493",
+      "intent": "HOW_TO",
+      "predicted": "KB0016493",
+      "rounds": 0,
+      "final_excerpt": "KB_Article_name:       KB0016493 Matching Score:        3.531 guidance_troubleshoot: true Issue Summary:         The user wants to disable Work Offline mode in Outlook so that Outlook reconnects and s"
+    },
+    {
+      "query": "my outlook is offline how do I reconnect",
+      "expected": "KB0016493",
+      "intent": "ISSUE",
+      "predicted": "KB0016493",
+      "rounds": 0,
+      "final_excerpt": "KB_Article_name:       KB0016493 Matching Score:        2.48 guidance_troubleshoot: true Issue Summary:         Outlook is showing Working Offline and needs to reconnect to stay online.  Here are the "
+    },
+    {
+      "query": "turn off offline mode so outlook goes back online",
+      "expected": "KB0016493",
+      "intent": "HOW_TO",
+      "predicted": "KB0016493",
+      "rounds": 0,
+      "final_excerpt": "KB_Article_name:       KB0016493 Matching Score:        3.234 guidance_troubleshoot: true Issue Summary:         The user wants to turn off Work Offline in Outlook so it goes back online. Here are the"
+    },
+    {
+      "query": "outlook stuck in working offline",
+      "expected": "KB0016493",
+      "intent": "ISSUE",
+      "predicted": "KB0016493",
+      "rounds": 0,
+      "final_excerpt": "KB_Article_name:       KB0016493 Matching Score:        2.473 guidance_troubleshoot: true Issue Summary:         Outlook is stuck in Working Offline mode and not reconnecting to online. --- Here are t"
+    },
+    {
+      "query": "how do I get outlook out of offline mode",
+      "expected": "KB0016493",
+      "intent": "HOW_TO",
+      "predicted": "KB0016493",
+      "rounds": 0,
+      "final_excerpt": "KB_Article_name:       KB0016493 Matching Score:        3.468 guidance_troubleshoot: true Issue Summary:         Outlook is in Working Offline mode and the user wants to turn off Work Offline so Outlo"
+    },
+    {
+      "query": "switch outlook from offline to online",
+      "expected": "KB0016493",
+      "intent": "HOW_TO",
+      "predicted": "KB0016493",
+      "rounds": 0,
+      "final_excerpt": "KB_Article_name:       KB0016493 Matching Score:        3.1 guidance_troubleshoot: true Issue Summary:         The user wants to switch Outlook from offline to online by turning off Work Offline mode."
+    },
+    {
+      "query": "how do I change my email signature",
+      "expected": null,
+      "intent": "HOW_TO",
+      "predicted": null,
+      "rounds": 5,
+      "final_excerpt": "Chat ended. Please start a new conversation."
+    },
+    {
+      "query": "microsoft teams won't start",
+      "expected": null,
+      "intent": "ISSUE",
+      "predicted": null,
+      "rounds": 5,
+      "final_excerpt": "Chat ended. Please start a new conversation."
+    },
+    {
+      "query": "how to reset my windows password",
+      "expected": null,
+      "intent": "HOW_TO",
+      "predicted": null,
+      "rounds": 5,
+      "final_excerpt": "Chat ended. Please start a new conversation."
+    },
+    {
+      "query": "my mouse is not working",
+      "expected": null,
+      "intent": "ISSUE",
+      "predicted": null,
+      "rounds": 5,
+      "final_excerpt": "Chat ended. Please start a new conversation."
+    },
+    {
+      "query": "how do I install excel",
+      "expected": null,
+      "intent": "HOW_TO",
+      "predicted": null,
+      "rounds": 5,
+      "final_excerpt": "Chat ended. Please start a new conversation."
+    },
+    {
+      "query": "set up out of office auto reply",
+      "expected": null,
+      "intent": "HOW_TO",
+      "predicted": "KB0010863",
+      "rounds": 0,
+      "final_excerpt": "KB_Article_name:       KB0010863 Matching Score:        2.059 guidance_troubleshoot: false Issue Summary:         The user wants to set up an automatic out-of-office reply in Outlook. Call Orchestrato"
+    },
+    {
+      "query": "how to add a shared mailbox",
+      "expected": null,
+      "intent": "HOW_TO",
+      "predicted": null,
+      "rounds": 5,
+      "final_excerpt": "Chat ended. Please start a new conversation."
+    },
+    {
+      "query": "my printer is offline",
+      "expected": null,
+      "intent": "ISSUE",
+      "predicted": null,
+      "rounds": 5,
+      "final_excerpt": "Chat ended. Please start a new conversation."
+    },
+    {
+      "query": "what is the weather today",
+      "expected": null,
+      "intent": "OFFTOPIC",
+      "predicted": null,
+      "rounds": 5,
+      "final_excerpt": "Chat ended. Please start a new conversation."
+    },
+    {
+      "query": "how do I create a rule to move emails to a folder",
+      "expected": null,
+      "intent": "HOW_TO",
+      "predicted": "KB0015711",
+      "rounds": 1,
+      "final_excerpt": "KB_Article_name:       KB0015711 Matching Score:        1.905 guidance_troubleshoot: true Issue Summary:         The user wants to create an Outlook rule to move incoming emails to a folder. Here are "
+    }
+  ]
+}

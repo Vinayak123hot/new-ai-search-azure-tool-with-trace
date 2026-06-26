@@ -1,0 +1,211 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "KB Candidates Tool",
+    "version": "1.0.0",
+    "description": "Returns candidate KB articles with key_symptoms and spread metadata for agent triage."
+  },
+  "servers": [
+    {
+      "url": "https://teva-kb-trace.azurewebsites.net"
+    }
+  ],
+  "paths": {
+    "/get_kb_guidance": {
+      "post": {
+        "operationId": "get_kb_guidance",
+        "summary": "Fetch full resolution steps for a KB article from blob storage",
+        "description": "Call this ONLY when the top candidate returned by get_kb_candidates has guidance_troubleshoot=true. Pass the kb_id of that top candidate. Returns the structured resolution steps (title, note, sections with numbered steps) and a time-limited read-only document_url the user can click to view the original file. Present the steps to the user as a clearly formatted numbered list grouped by section heading. Always show the document_url as a clickable link labelled 'View original document'.",
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "kb_id"
+                ],
+                "properties": {
+                  "kb_id": {
+                    "type": "string",
+                    "description": "The KB article ID from the top candidate, e.g. KB0010863."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Structured resolution steps and a read-only document link",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "kb_id": {
+                      "type": "string"
+                    },
+                    "title": {
+                      "type": "string"
+                    },
+                    "environment": {
+                      "type": "string"
+                    },
+                    "note": {
+                      "type": "string"
+                    },
+                    "sections": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "heading": {
+                            "type": "string"
+                          },
+                          "steps": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "document_url": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "document_name": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "KB article not found in blob storage"
+          },
+          "401": {
+            "description": "Invalid or missing API key"
+          },
+          "400": {
+            "description": "Missing kb_id field"
+          },
+          "500": {
+            "description": "Blob download or parse error"
+          }
+        }
+      }
+    },
+    "/get_kb_candidates": {
+      "post": {
+        "operationId": "get_kb_candidates",
+        "summary": "Get candidate KB articles for an Outlook issue",
+        "description": "Returns the top candidate KB articles along with their curated key_symptoms and a 'spread' field. When spread='high' the candidates are tightly clustered and you must ask ONE follow-up question grounded ONLY in the returned key_symptoms — never invent or paraphrase symptoms. When spread='low' one candidate clearly leads and you are ready to resolve. Call this at the start of triage and after every user follow-up answer, always passing the full cumulative description.",
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "description"
+                ],
+                "properties": {
+                  "description": {
+                    "type": "string",
+                    "description": "The user's full issue description — original report plus every follow-up answer received so far, concatenated."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Candidate KB articles with spread metadata",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "candidates": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "kb_id": {
+                            "type": "string"
+                          },
+                          "summary": {
+                            "type": "string"
+                          },
+                          "key_symptoms": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "guidance_troubleshoot": {
+                            "type": "boolean",
+                            "nullable": true
+                          },
+                          "score": {
+                            "type": "number"
+                          }
+                        }
+                      }
+                    },
+                    "spread": {
+                      "type": "string",
+                      "enum": [
+                        "high",
+                        "low"
+                      ]
+                    },
+                    "top_score": {
+                      "type": "number"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid or missing API key"
+          },
+          "400": {
+            "description": "Missing description field"
+          },
+          "500": {
+            "description": "Search or server error"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "ApiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "x-api-key"
+      }
+    }
+  }
+}

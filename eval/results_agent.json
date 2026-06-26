@@ -1,0 +1,592 @@
+[
+  {
+    "query": "outlook is stuck on the loading screen",
+    "expected": "KB0010265",
+    "intent": "ISSUE",
+    "predicted": null,
+    "rounds": 3,
+    "asked_clarification": true,
+    "final_excerpt": "",
+    "thread_id": "thread_GYluNHq9RqnKvI4YCzTfzUoB"
+  },
+  {
+    "query": "my outlook freezes when it starts and then shows an error",
+    "expected": "KB0010265",
+    "intent": "ISSUE",
+    "predicted": null,
+    "rounds": 3,
+    "asked_clarification": true,
+    "final_excerpt": "",
+    "thread_id": "thread_PeTgoSIq3nW9hayU93q3a9wD"
+  },
+  {
+    "query": "outlook hangs on loading profile and is not responding",
+    "expected": "KB0010265",
+    "intent": "ISSUE",
+    "predicted": null,
+    "rounds": 3,
+    "asked_clarification": true,
+    "final_excerpt": "",
+    "thread_id": "thread_GqPgmwICpz2Vd8FdXuU8fD5l"
+  },
+  {
+    "query": "outlook is really slow and keeps freezing",
+    "expected": "KB0010265",
+    "intent": "ISSUE",
+    "predicted": null,
+    "rounds": 3,
+    "asked_clarification": true,
+    "final_excerpt": "",
+    "thread_id": "thread_cr4je6ohdcuz30ZtkRdoFdJU"
+  },
+  {
+    "query": "otulook stuck loading then crashes with an error",
+    "expected": "KB0010265",
+    "intent": "ISSUE",
+    "predicted": null,
+    "rounds": 3,
+    "asked_clarification": true,
+    "final_excerpt": "",
+    "thread_id": "thread_XfpQybFOCkUiQV9jGisGrw1G"
+  },
+  {
+    "query": "outlook performance is terrible it freezes constantly",
+    "expected": "KB0010265",
+    "intent": "ISSUE",
+    "predicted": null,
+    "rounds": 3,
+    "asked_clarification": true,
+    "final_excerpt": "",
+    "thread_id": "thread_W1aMuul3e9k6Ir8r54axzLT3"
+  },
+  {
+    "query": "the outlook window opens but just hangs on loading",
+    "expected": "KB0010265",
+    "intent": "ISSUE",
+    "predicted": null,
+    "rounds": 3,
+    "asked_clarification": true,
+    "final_excerpt": "",
+    "thread_id": "thread_ixPPpS1D4O2GY0vEjSqVogVB"
+  },
+  {
+    "query": "outlook not responding stuck on starting screen",
+    "expected": "KB0010265",
+    "intent": "ISSUE",
+    "predicted": null,
+    "rounds": 3,
+    "asked_clarification": true,
+    "final_excerpt": "",
+    "thread_id": "thread_K9D2hapQY1aX70wI2wMS5Nnm"
+  },
+  {
+    "query": "email client is frozen on the splash screen",
+    "expected": "KB0010265",
+    "intent": "ISSUE",
+    "predicted": null,
+    "rounds": 3,
+    "asked_clarification": true,
+    "final_excerpt": "",
+    "thread_id": "thread_bL50PFIkihlOlLNyfZuBDo2V"
+  },
+  {
+    "query": "outlook takes forever to load and errors out",
+    "expected": "KB0010265",
+    "intent": "ISSUE",
+    "predicted": null,
+    "rounds": 3,
+    "asked_clarification": true,
+    "final_excerpt": "",
+    "thread_id": "thread_ZIh2vhrAc2tqKXketls36jst"
+  },
+  {
+    "query": "how do I rebuild my outlook profile",
+    "expected": "KB0010863",
+    "intent": "HOW_TO",
+    "predicted": null,
+    "rounds": 3,
+    "asked_clarification": true,
+    "final_excerpt": "",
+    "thread_id": "thread_WKuRh5sHYhSH57Jpthqjuhlh"
+  },
+  {
+    "query": "steps to recreate my OST file",
+    "expected": "KB0010863",
+    "intent": "HOW_TO",
+    "predicted": null,
+    "rounds": 3,
+    "asked_clarification": true,
+    "final_excerpt": "",
+    "thread_id": "thread_1cVCYZgXK3MMkUezUUnefLMb"
+  },
+  {
+    "query": "how to rebuild a corrupt outlook profile",
+    "expected": "KB0010863",
+    "intent": "HOW_TO",
+    "predicted": null,
+    "rounds": 3,
+    "asked_clarification": true,
+    "final_excerpt": "",
+    "thread_id": "thread_IqlTQLYRJmiregDmINXN65D7"
+  },
+  {
+    "query": "i need to recreate my mail profile in outlook",
+    "expected": "KB0010863",
+    "intent": "HOW_TO",
+    "predicted": null,
+    "rounds": 3,
+    "asked_clarification": true,
+    "final_excerpt": "",
+    "thread_id": "thread_dALtIea1y8jDn2DoS7RP7IJn"
+  },
+  {
+    "query": "how can I rebuild the ost data file",
+    "expected": "KB0010863",
+    "intent": "HOW_TO",
+    "predicted": null,
+    "rounds": 3,
+    "asked_clarification": true,
+    "final_excerpt": "",
+    "thread_id": "thread_J52knAw4wwvrnliA3oeQrM1Z"
+  },
+  {
+    "query": "rebuild user profile outlook how to",
+    "expected": "KB0010863",
+    "intent": "HOW_TO",
+    "predicted": null,
+    "rounds": 3,
+    "asked_clarification": true,
+    "final_excerpt": "",
+    "thread_id": "thread_B6fGmof7xusVQOkQMpESwVKB"
+  },
+  {
+    "query": "what are the steps to set up a fresh outlook profile",
+    "expected": "KB0010863",
+    "intent": "HOW_TO",
+    "predicted": null,
+    "rounds": 3,
+    "asked_clarification": true,
+    "final_excerpt": "",
+    "thread_id": "thread_jMlWv1EDQiS5MicEWIToPbC4"
+  },
+  {
+    "query": "my outlook profile is broken how do I rebuild it",
+    "expected": "KB0010863",
+    "intent": "HOW_TO",
+    "predicted": null,
+    "rounds": 3,
+    "asked_clarification": true,
+    "final_excerpt": "",
+    "thread_id": "thread_82adwcdbQTY5hbIwKVPpgAKV"
+  },
+  {
+    "query": "the phishing add-in got disabled",
+    "expected": "KB0010865",
+    "intent": "ISSUE",
+    "predicted": null,
+    "rounds": 3,
+    "asked_clarification": true,
+    "final_excerpt": "",
+    "thread_id": "thread_7Xtw1kzQzXwoau1Cbtdsxgxk"
+  },
+  {
+    "query": "my report spam button disappeared from outlook",
+    "expected": "KB0010865",
+    "intent": "ISSUE",
+    "predicted": null,
+    "rounds": 3,
+    "asked_clarification": true,
+    "final_excerpt": "",
+    "thread_id": "thread_ZZd7olrPaHWjkVGpfMwBJQCU"
+  },
+  {
+    "query": "how do I re-enable an add-in that was automatically disabled",
+    "expected": "KB0010865",
+    "intent": "HOW_TO",
+    "predicted": null,
+    "rounds": 3,
+    "asked_clarification": true,
+    "final_excerpt": "",
+    "thread_id": "thread_CgUeYhO00tIxzLM843fdjoB2"
+  },
+  {
+    "query": "report phishing addin is greyed out",
+    "expected": "KB0010865",
+    "intent": "ISSUE",
+    "predicted": null,
+    "rounds": 3,
+    "asked_clarification": true,
+    "final_excerpt": "",
+    "thread_id": "thread_7u1FnR9C6T7F0Zu6HRWIbz2o"
+  },
+  {
+    "query": "outlook disabled my phishing reporting add in",
+    "expected": "KB0010865",
+    "intent": "ISSUE",
+    "predicted": null,
+    "rounds": 3,
+    "asked_clarification": true,
+    "final_excerpt": "",
+    "thread_id": "thread_JI716sRlfCjnrDjhKja78BvA"
+  },
+  {
+    "query": "the report message add-in keeps getting turned off",
+    "expected": "KB0010865",
+    "intent": "ISSUE",
+    "predicted": null,
+    "rounds": 3,
+    "asked_clarification": true,
+    "final_excerpt": "",
+    "thread_id": "thread_MiA5W6t27DHXWdIPzcwZwjPp"
+  },
+  {
+    "query": "how to turn the auto-disabled spam add-in back on",
+    "expected": "KB0010865",
+    "intent": "HOW_TO",
+    "predicted": null,
+    "rounds": 3,
+    "asked_clarification": true,
+    "final_excerpt": "",
+    "thread_id": "thread_YgbJGvWZMl6DKXR8ldyxEpk9"
+  },
+  {
+    "query": "phishing button missing from my ribbon",
+    "expected": "KB0010865",
+    "intent": "ISSUE",
+    "predicted": null,
+    "rounds": 3,
+    "asked_clarification": true,
+    "final_excerpt": "",
+    "thread_id": "thread_keXPpufIZ7rzhR1ixrv1sGnM"
+  },
+  {
+    "query": "outlook won't open at all",
+    "expected": "KB0013608",
+    "intent": "ISSUE",
+    "predicted": null,
+    "rounds": 3,
+    "asked_clarification": true,
+    "final_excerpt": "",
+    "thread_id": "thread_kX1ve1CbMICOGQnZe8jjWNiR"
+  },
+  {
+    "query": "nothing happens when I click the outlook icon",
+    "expected": "KB0013608",
+    "intent": "ISSUE",
+    "predicted": null,
+    "rounds": 3,
+    "asked_clarification": true,
+    "final_excerpt": "",
+    "thread_id": "thread_dwByBGLEWzwWVO1ffn6Yfq4S"
+  },
+  {
+    "query": "i can't get outlook to start",
+    "expected": "KB0013608",
+    "intent": "ISSUE",
+    "predicted": null,
+    "rounds": 3,
+    "asked_clarification": true,
+    "final_excerpt": "",
+    "thread_id": "thread_hwgvnWEc77PISqBiofLADGGw"
+  },
+  {
+    "query": "outlook does not launch when I double click it",
+    "expected": "KB0013608",
+    "intent": "ISSUE",
+    "predicted": null,
+    "rounds": 3,
+    "asked_clarification": true,
+    "final_excerpt": "",
+    "thread_id": "thread_IJ24K3unp55Y3zAyTJqcARjl"
+  },
+  {
+    "query": "unable to open microsoft outlook",
+    "expected": "KB0013608",
+    "intent": "ISSUE",
+    "predicted": null,
+    "rounds": 3,
+    "asked_clarification": true,
+    "final_excerpt": "",
+    "thread_id": "thread_4sCTrxr8XPw3zNq67Qhs38X6"
+  },
+  {
+    "query": "outlook will not start up",
+    "expected": "KB0013608",
+    "intent": "ISSUE",
+    "predicted": null,
+    "rounds": 3,
+    "asked_clarification": true,
+    "final_excerpt": "",
+    "thread_id": "thread_rbQLOTnXrJVGZSfALW95N7Lh"
+  },
+  {
+    "query": "my outlook app refuses to open",
+    "expected": "KB0013608",
+    "intent": "ISSUE",
+    "predicted": null,
+    "rounds": 3,
+    "asked_clarification": true,
+    "final_excerpt": "",
+    "thread_id": "thread_ZMfh6xhFoa6fu6Ct4A0ePs9O"
+  },
+  {
+    "query": "clicking outlook does nothing it never opens",
+    "expected": "KB0013608",
+    "intent": "ISSUE",
+    "predicted": null,
+    "rounds": 3,
+    "asked_clarification": true,
+    "final_excerpt": "",
+    "thread_id": "thread_QC9bWylvFAwmlmDQvVCjYYaz"
+  },
+  {
+    "query": "outlook crashes when I click the calendar",
+    "expected": "KB0015622",
+    "intent": "ISSUE",
+    "predicted": null,
+    "rounds": 3,
+    "asked_clarification": true,
+    "final_excerpt": "",
+    "thread_id": "thread_xQ798SHTwkkFVfb2KHgqDqt8"
+  },
+  {
+    "query": "every time I open calendar outlook closes",
+    "expected": "KB0015622",
+    "intent": "ISSUE",
+    "predicted": null,
+    "rounds": 3,
+    "asked_clarification": true,
+    "final_excerpt": "",
+    "thread_id": "thread_S98hlfHZQmmxeDvpHOLOO2FM"
+  },
+  {
+    "query": "the calendar tab makes outlook crash",
+    "expected": "KB0015622",
+    "intent": "ISSUE",
+    "predicted": null,
+    "rounds": 3,
+    "asked_clarification": true,
+    "final_excerpt": "",
+    "thread_id": "thread_qjydSlWAXTu4ail4JO4RaltT"
+  },
+  {
+    "query": "outlook shuts down whenever I go to calendar",
+    "expected": "KB0015622",
+    "intent": "ISSUE",
+    "predicted": null,
+    "rounds": 3,
+    "asked_clarification": true,
+    "final_excerpt": "",
+    "thread_id": "thread_9haoZXyOUZeGRmcnuu0AT6s3"
+  },
+  {
+    "query": "clicking calendar crashes my outlook",
+    "expected": "KB0015622",
+    "intent": "ISSUE",
+    "predicted": null,
+    "rounds": 3,
+    "asked_clarification": true,
+    "final_excerpt": "",
+    "thread_id": "thread_OrrSLjxWhNq5D2S30PGzk2yj"
+  },
+  {
+    "query": "outlook keeps crashing on the calendar view",
+    "expected": "KB0015622",
+    "intent": "ISSUE",
+    "predicted": null,
+    "rounds": 3,
+    "asked_clarification": true,
+    "final_excerpt": "",
+    "thread_id": "thread_5VboMXibD5l0K4DqvFvJcTZI"
+  },
+  {
+    "query": "calendar tab crash in outlook",
+    "expected": "KB0015622",
+    "intent": "ISSUE",
+    "predicted": null,
+    "rounds": 3,
+    "asked_clarification": true,
+    "final_excerpt": "",
+    "thread_id": "thread_93rYSSjqtwulbuxEvzSzdP0h"
+  },
+  {
+    "query": "outlook dies when I switch to calendar",
+    "expected": "KB0015622",
+    "intent": "ISSUE",
+    "predicted": null,
+    "rounds": 3,
+    "asked_clarification": true,
+    "final_excerpt": "",
+    "thread_id": "thread_xfZMmigk35hTyME4Ul6RItNS"
+  },
+  {
+    "query": "my emails are stuck in the outbox",
+    "expected": "KB0015711",
+    "intent": "ISSUE",
+    "predicted": null,
+    "rounds": 3,
+    "asked_clarification": true,
+    "final_excerpt": "",
+    "thread_id": "thread_xrBYUaIee4tUKea7NxMAtudG"
+  },
+  {
+    "query": "email won't send it just stays in outbox",
+    "expected": "KB0015711",
+    "intent": "ISSUE",
+    "predicted": null,
+    "rounds": 3,
+    "asked_clarification": true,
+    "final_excerpt": "",
+    "thread_id": "thread_kqbqSpSVIsroVLsve0okVX9w"
+  },
+  {
+    "query": "messages sitting in outbox not going out",
+    "expected": "KB0015711",
+    "intent": "ISSUE",
+    "predicted": null,
+    "rounds": 3,
+    "asked_clarification": true,
+    "final_excerpt": "",
+    "thread_id": "thread_wi5ErBbpOnJnJ06Uw4s5o3xB"
+  },
+  {
+    "query": "outlook not sending mail stuck in outbox",
+    "expected": "KB0015711",
+    "intent": "ISSUE",
+    "predicted": null,
+    "rounds": 3,
+    "asked_clarification": true,
+    "final_excerpt": "",
+    "thread_id": "thread_4jKQtusXnrZRngFkYXsmDC5m"
+  },
+  {
+    "query": "my mail only sends after I hit send receive",
+    "expected": "KB0015711",
+    "intent": "ISSUE",
+    "predicted": null,
+    "rounds": 3,
+    "asked_clarification": true,
+    "final_excerpt": "",
+    "thread_id": "thread_Le3unfi6npYv3xLGYAyNEWe1"
+  },
+  {
+    "query": "emails are not sending immediately they wait in outbox",
+    "expected": "KB0015711",
+    "intent": "ISSUE",
+    "predicted": null,
+    "rounds": 3,
+    "asked_clarification": true,
+    "final_excerpt": "",
+    "thread_id": "thread_zwOuUjpdOi1coycHLoD2afFK"
+  },
+  {
+    "query": "outbox messages won't deliver",
+    "expected": "KB0015711",
+    "intent": "ISSUE",
+    "predicted": null,
+    "rounds": 3,
+    "asked_clarification": true,
+    "final_excerpt": "",
+    "thread_id": "thread_iqDIfU2alqhVFgXvPomME3D7"
+  },
+  {
+    "query": "sent email stuck and not leaving outbox",
+    "expected": "KB0015711",
+    "intent": "ISSUE",
+    "predicted": null,
+    "rounds": 3,
+    "asked_clarification": true,
+    "final_excerpt": "",
+    "thread_id": "thread_K95GYW1ERF82h2Q9FeFOa07t"
+  },
+  {
+    "query": "I don't get meeting notifications",
+    "expected": "KB0016162",
+    "intent": "ISSUE",
+    "predicted": null,
+    "rounds": 3,
+    "asked_clarification": true,
+    "final_excerpt": "",
+    "thread_id": "thread_CxiDK9b37rzypYavvdLocB4d"
+  },
+  {
+    "query": "not receiving meeting request alerts",
+    "expected": "KB0016162",
+    "intent": "ISSUE",
+    "predicted": null,
+    "rounds": 3,
+    "asked_clarification": true,
+    "final_excerpt": "",
+    "thread_id": "thread_kewaWEFY5X8dAGXJe04VB1vm"
+  },
+  {
+    "query": "meetings go straight to my calendar without notifying me",
+    "expected": "KB0016162",
+    "intent": "ISSUE",
+    "predicted": null,
+    "rounds": 3,
+    "asked_clarification": true,
+    "final_excerpt": "",
+    "thread_id": "thread_2eStYbdsgLYLUiVxpqYlGRbK"
+  },
+  {
+    "query": "no popup when I get a meeting invite",
+    "expected": "KB0016162",
+    "intent": "ISSUE",
+    "predicted": null,
+    "rounds": 3,
+    "asked_clarification": true,
+    "final_excerpt": "",
+    "thread_id": "thread_Cy2EUuSAfoBdfS5yoUPQfy0G"
+  },
+  {
+    "query": "meeting invites don't show any notification",
+    "expected": "KB0016162",
+    "intent": "ISSUE",
+    "predicted": null,
+    "rounds": 3,
+    "asked_clarification": true,
+    "final_excerpt": "",
+    "thread_id": "thread_HP55qf666oEOf0Pga80a6x3C"
+  },
+  {
+    "query": "I'm not notified about new meeting requests",
+    "expected": "KB0016162",
+    "intent": "ISSUE",
+    "predicted": null,
+    "rounds": 3,
+    "asked_clarification": true,
+    "final_excerpt": "",
+    "thread_id": "thread_d46rslQQg7es1Wo2hqDNW5eo"
+  },
+  {
+    "query": "calendar invites are added silently with no alert",
+    "expected": "KB0016162",
+    "intent": "ISSUE",
+    "predicted": null,
+    "rounds": 3,
+    "asked_clarification": true,
+    "final_excerpt": "",
+    "thread_id": "thread_n3mIRvXxWo76l5EVPfuD4JTD"
+  },
+  {
+    "query": "missing notifications for meeting requests",
+    "expected": "KB0016162",
+    "intent": "ISSUE",
+    "predicted": null,
+    "rounds": 3,
+    "asked_clarification": true,
+    "final_excerpt": "",
+    "thread_id": "thread_IOTpQRL80njRvr5G4GYgjCDa"
+  },
+  {
+    "query": "how to turn off work offline in outlook",
+    "expected": "KB0016493",
+    "intent": "HOW_TO",
+    "predicted": null,
+    "rounds": 3,
+    "asked_clarification": true,
+    "final_excerpt": "",
+    "thread_id": "thread_HAmsoUdSNzpzW3GertKKCb2U"
+  }
+]

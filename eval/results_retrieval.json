@@ -1,0 +1,1189 @@
+{
+  "summary": {
+    "endpoint": "https://teva-kb-trace.azurewebsites.net",
+    "total_cases": 76,
+    "in_kb_cases": 66,
+    "out_kb_cases": 10,
+    "top1_accuracy": "86.4%",
+    "recall_at_returnk": "100.0%",
+    "out_of_kb_rejection": "100.0%",
+    "guidance_flag_accuracy_on_hits": "100.0%",
+    "spread_distribution": {
+      "low": 40,
+      "high": 36
+    },
+    "spread_when_correct": {
+      "high": 27,
+      "low": 30
+    },
+    "spread_when_wrong": {
+      "high": 9,
+      "low": 0
+    },
+    "per_kb_top1": {
+      "KB0010265": "7/10",
+      "KB0010863": "6/8",
+      "KB0010865": "8/8",
+      "KB0013608": "6/8",
+      "KB0015622": "6/8",
+      "KB0015711": "8/8",
+      "KB0016162": "8/8",
+      "KB0016493": "8/8"
+    }
+  },
+  "misses": [
+    {
+      "query": "outlook is really slow and keeps freezing",
+      "expected": "KB0010265",
+      "intent": "ISSUE",
+      "predicted_top": "KB0015622",
+      "top_score": 2.593,
+      "spread": "high",
+      "returned": [
+        "KB0015622",
+        "KB0010265",
+        "KB0013608"
+      ],
+      "top_gt": false
+    },
+    {
+      "query": "outlook performance is terrible it freezes constantly",
+      "expected": "KB0010265",
+      "intent": "ISSUE",
+      "predicted_top": "KB0015622",
+      "top_score": 2.562,
+      "spread": "high",
+      "returned": [
+        "KB0015622",
+        "KB0010265",
+        "KB0015711"
+      ],
+      "top_gt": false
+    },
+    {
+      "query": "email client is frozen on the splash screen",
+      "expected": "KB0010265",
+      "intent": "ISSUE",
+      "predicted_top": "KB0013608",
+      "top_score": 2.274,
+      "spread": "high",
+      "returned": [
+        "KB0013608",
+        "KB0010265",
+        "KB0015622"
+      ],
+      "top_gt": false
+    },
+    {
+      "query": "how to rebuild a corrupt outlook profile",
+      "expected": "KB0010863",
+      "intent": "HOW_TO",
+      "predicted_top": "KB0010265",
+      "top_score": 2.965,
+      "spread": "high",
+      "returned": [
+        "KB0010265",
+        "KB0010863",
+        "KB0015622"
+      ],
+      "top_gt": true
+    },
+    {
+      "query": "i need to recreate my mail profile in outlook",
+      "expected": "KB0010863",
+      "intent": "HOW_TO",
+      "predicted_top": "KB0010265",
+      "top_score": 2.977,
+      "spread": "high",
+      "returned": [
+        "KB0010265",
+        "KB0010863",
+        "KB0015711"
+      ],
+      "top_gt": true
+    },
+    {
+      "query": "nothing happens when I click the outlook icon",
+      "expected": "KB0013608",
+      "intent": "ISSUE",
+      "predicted_top": "KB0015622",
+      "top_score": 2.527,
+      "spread": "high",
+      "returned": [
+        "KB0015622",
+        "KB0013608",
+        "KB0010265"
+      ],
+      "top_gt": false
+    },
+    {
+      "query": "i can't get outlook to start",
+      "expected": "KB0013608",
+      "intent": "ISSUE",
+      "predicted_top": "KB0010265",
+      "top_score": 3.195,
+      "spread": "high",
+      "returned": [
+        "KB0010265",
+        "KB0013608",
+        "KB0015622"
+      ],
+      "top_gt": true
+    },
+    {
+      "query": "every time I open calendar outlook closes",
+      "expected": "KB0015622",
+      "intent": "ISSUE",
+      "predicted_top": "KB0013608",
+      "top_score": 3.106,
+      "spread": "high",
+      "returned": [
+        "KB0013608",
+        "KB0015622",
+        "KB0010265"
+      ],
+      "top_gt": false
+    },
+    {
+      "query": "outlook dies when I switch to calendar",
+      "expected": "KB0015622",
+      "intent": "ISSUE",
+      "predicted_top": "KB0013608",
+      "top_score": 2.572,
+      "spread": "high",
+      "returned": [
+        "KB0013608",
+        "KB0015622",
+        "KB0010265"
+      ],
+      "top_gt": false
+    }
+  ],
+  "false_positives": [],
+  "results": [
+    {
+      "query": "outlook is stuck on the loading screen",
+      "expected": "KB0010265",
+      "intent": "ISSUE",
+      "predicted_top": "KB0010265",
+      "top_score": 3.754,
+      "spread": "low",
+      "returned": [
+        "KB0010265",
+        "KB0013608",
+        "KB0015622"
+      ],
+      "top_gt": true
+    },
+    {
+      "query": "my outlook freezes when it starts and then shows an error",
+      "expected": "KB0010265",
+      "intent": "ISSUE",
+      "predicted_top": "KB0010265",
+      "top_score": 3.209,
+      "spread": "low",
+      "returned": [
+        "KB0010265",
+        "KB0015622",
+        "KB0013608"
+      ],
+      "top_gt": true
+    },
+    {
+      "query": "outlook hangs on loading profile and is not responding",
+      "expected": "KB0010265",
+      "intent": "ISSUE",
+      "predicted_top": "KB0010265",
+      "top_score": 3.187,
+      "spread": "low",
+      "returned": [
+        "KB0010265",
+        "KB0013608",
+        "KB0015622"
+      ],
+      "top_gt": true
+    },
+    {
+      "query": "outlook is really slow and keeps freezing",
+      "expected": "KB0010265",
+      "intent": "ISSUE",
+      "predicted_top": "KB0015622",
+      "top_score": 2.593,
+      "spread": "high",
+      "returned": [
+        "KB0015622",
+        "KB0010265",
+        "KB0013608"
+      ],
+      "top_gt": false
+    },
+    {
+      "query": "otulook stuck loading then crashes with an error",
+      "expected": "KB0010265",
+      "intent": "ISSUE",
+      "predicted_top": "KB0010265",
+      "top_score": 3.411,
+      "spread": "low",
+      "returned": [
+        "KB0010265",
+        "KB0013608",
+        "KB0015622"
+      ],
+      "top_gt": true
+    },
+    {
+      "query": "outlook performance is terrible it freezes constantly",
+      "expected": "KB0010265",
+      "intent": "ISSUE",
+      "predicted_top": "KB0015622",
+      "top_score": 2.562,
+      "spread": "high",
+      "returned": [
+        "KB0015622",
+        "KB0010265",
+        "KB0015711"
+      ],
+      "top_gt": false
+    },
+    {
+      "query": "the outlook window opens but just hangs on loading",
+      "expected": "KB0010265",
+      "intent": "ISSUE",
+      "predicted_top": "KB0010265",
+      "top_score": 3.273,
+      "spread": "low",
+      "returned": [
+        "KB0010265",
+        "KB0013608",
+        "KB0015622"
+      ],
+      "top_gt": true
+    },
+    {
+      "query": "outlook not responding stuck on starting screen",
+      "expected": "KB0010265",
+      "intent": "ISSUE",
+      "predicted_top": "KB0010265",
+      "top_score": 3.509,
+      "spread": "low",
+      "returned": [
+        "KB0010265",
+        "KB0013608",
+        "KB0015622"
+      ],
+      "top_gt": true
+    },
+    {
+      "query": "email client is frozen on the splash screen",
+      "expected": "KB0010265",
+      "intent": "ISSUE",
+      "predicted_top": "KB0013608",
+      "top_score": 2.274,
+      "spread": "high",
+      "returned": [
+        "KB0013608",
+        "KB0010265",
+        "KB0015622"
+      ],
+      "top_gt": false
+    },
+    {
+      "query": "outlook takes forever to load and errors out",
+      "expected": "KB0010265",
+      "intent": "ISSUE",
+      "predicted_top": "KB0010265",
+      "top_score": 3.26,
+      "spread": "low",
+      "returned": [
+        "KB0010265",
+        "KB0013608",
+        "KB0015622"
+      ],
+      "top_gt": true
+    },
+    {
+      "query": "how do I rebuild my outlook profile",
+      "expected": "KB0010863",
+      "intent": "HOW_TO",
+      "predicted_top": "KB0010863",
+      "top_score": 3.436,
+      "spread": "low",
+      "returned": [
+        "KB0010863",
+        "KB0010265",
+        "KB0015622"
+      ],
+      "top_gt": false
+    },
+    {
+      "query": "steps to recreate my OST file",
+      "expected": "KB0010863",
+      "intent": "HOW_TO",
+      "predicted_top": "KB0010863",
+      "top_score": 3.024,
+      "spread": "low",
+      "returned": [
+        "KB0010863",
+        "KB0010265",
+        "KB0015711"
+      ],
+      "top_gt": false
+    },
+    {
+      "query": "how to rebuild a corrupt outlook profile",
+      "expected": "KB0010863",
+      "intent": "HOW_TO",
+      "predicted_top": "KB0010265",
+      "top_score": 2.965,
+      "spread": "high",
+      "returned": [
+        "KB0010265",
+        "KB0010863",
+        "KB0015622"
+      ],
+      "top_gt": true
+    },
+    {
+      "query": "i need to recreate my mail profile in outlook",
+      "expected": "KB0010863",
+      "intent": "HOW_TO",
+      "predicted_top": "KB0010265",
+      "top_score": 2.977,
+      "spread": "high",
+      "returned": [
+        "KB0010265",
+        "KB0010863",
+        "KB0015711"
+      ],
+      "top_gt": true
+    },
+    {
+      "query": "how can I rebuild the ost data file",
+      "expected": "KB0010863",
+      "intent": "HOW_TO",
+      "predicted_top": "KB0010863",
+      "top_score": 2.971,
+      "spread": "high",
+      "returned": [
+        "KB0010863",
+        "KB0010265",
+        "KB0015622"
+      ],
+      "top_gt": false
+    },
+    {
+      "query": "rebuild user profile outlook how to",
+      "expected": "KB0010863",
+      "intent": "HOW_TO",
+      "predicted_top": "KB0010863",
+      "top_score": 3.552,
+      "spread": "low",
+      "returned": [
+        "KB0010863",
+        "KB0010265",
+        "KB0013608"
+      ],
+      "top_gt": false
+    },
+    {
+      "query": "what are the steps to set up a fresh outlook profile",
+      "expected": "KB0010863",
+      "intent": "HOW_TO",
+      "predicted_top": "KB0010863",
+      "top_score": 2.7,
+      "spread": "high",
+      "returned": [
+        "KB0010863",
+        "KB0010265",
+        "KB0015711"
+      ],
+      "top_gt": false
+    },
+    {
+      "query": "my outlook profile is broken how do I rebuild it",
+      "expected": "KB0010863",
+      "intent": "HOW_TO",
+      "predicted_top": "KB0010863",
+      "top_score": 3.264,
+      "spread": "high",
+      "returned": [
+        "KB0010863",
+        "KB0010265",
+        "KB0015622"
+      ],
+      "top_gt": false
+    },
+    {
+      "query": "the phishing add-in got disabled",
+      "expected": "KB0010865",
+      "intent": "ISSUE",
+      "predicted_top": "KB0010865",
+      "top_score": 3.426,
+      "spread": "low",
+      "returned": [
+        "KB0010865",
+        "KB0010265",
+        "KB0013608"
+      ],
+      "top_gt": true
+    },
+    {
+      "query": "my report spam button disappeared from outlook",
+      "expected": "KB0010865",
+      "intent": "ISSUE",
+      "predicted_top": "KB0010865",
+      "top_score": 2.983,
+      "spread": "high",
+      "returned": [
+        "KB0010865",
+        "KB0010863",
+        "KB0015622"
+      ],
+      "top_gt": true
+    },
+    {
+      "query": "how do I re-enable an add-in that was automatically disabled",
+      "expected": "KB0010865",
+      "intent": "HOW_TO",
+      "predicted_top": "KB0010865",
+      "top_score": 3.245,
+      "spread": "high",
+      "returned": [
+        "KB0010865",
+        "KB0010265",
+        "KB0010863"
+      ],
+      "top_gt": true
+    },
+    {
+      "query": "report phishing addin is greyed out",
+      "expected": "KB0010865",
+      "intent": "ISSUE",
+      "predicted_top": "KB0010865",
+      "top_score": 2.91,
+      "spread": "high",
+      "returned": [
+        "KB0010865",
+        "KB0010265",
+        "KB0013608"
+      ],
+      "top_gt": true
+    },
+    {
+      "query": "outlook disabled my phishing reporting add in",
+      "expected": "KB0010865",
+      "intent": "ISSUE",
+      "predicted_top": "KB0010865",
+      "top_score": 3.642,
+      "spread": "low",
+      "returned": [
+        "KB0010865",
+        "KB0010265",
+        "KB0010863"
+      ],
+      "top_gt": true
+    },
+    {
+      "query": "the report message add-in keeps getting turned off",
+      "expected": "KB0010865",
+      "intent": "ISSUE",
+      "predicted_top": "KB0010865",
+      "top_score": 2.738,
+      "spread": "high",
+      "returned": [
+        "KB0010865",
+        "KB0010265",
+        "KB0016493"
+      ],
+      "top_gt": true
+    },
+    {
+      "query": "how to turn the auto-disabled spam add-in back on",
+      "expected": "KB0010865",
+      "intent": "HOW_TO",
+      "predicted_top": "KB0010865",
+      "top_score": 3.55,
+      "spread": "low",
+      "returned": [
+        "KB0010865",
+        "KB0010265",
+        "KB0010863"
+      ],
+      "top_gt": true
+    },
+    {
+      "query": "phishing button missing from my ribbon",
+      "expected": "KB0010865",
+      "intent": "ISSUE",
+      "predicted_top": "KB0010865",
+      "top_score": 2.16,
+      "spread": "high",
+      "returned": [
+        "KB0010865",
+        "KB0013608",
+        "KB0010265"
+      ],
+      "top_gt": true
+    },
+    {
+      "query": "outlook won't open at all",
+      "expected": "KB0013608",
+      "intent": "ISSUE",
+      "predicted_top": "KB0013608",
+      "top_score": 3.141,
+      "spread": "high",
+      "returned": [
+        "KB0013608",
+        "KB0010265",
+        "KB0015622"
+      ],
+      "top_gt": false
+    },
+    {
+      "query": "nothing happens when I click the outlook icon",
+      "expected": "KB0013608",
+      "intent": "ISSUE",
+      "predicted_top": "KB0015622",
+      "top_score": 2.527,
+      "spread": "high",
+      "returned": [
+        "KB0015622",
+        "KB0013608",
+        "KB0010265"
+      ],
+      "top_gt": false
+    },
+    {
+      "query": "i can't get outlook to start",
+      "expected": "KB0013608",
+      "intent": "ISSUE",
+      "predicted_top": "KB0010265",
+      "top_score": 3.195,
+      "spread": "high",
+      "returned": [
+        "KB0010265",
+        "KB0013608",
+        "KB0015622"
+      ],
+      "top_gt": true
+    },
+    {
+      "query": "outlook does not launch when I double click it",
+      "expected": "KB0013608",
+      "intent": "ISSUE",
+      "predicted_top": "KB0013608",
+      "top_score": 2.863,
+      "spread": "high",
+      "returned": [
+        "KB0013608",
+        "KB0010265",
+        "KB0015622"
+      ],
+      "top_gt": false
+    },
+    {
+      "query": "unable to open microsoft outlook",
+      "expected": "KB0013608",
+      "intent": "ISSUE",
+      "predicted_top": "KB0013608",
+      "top_score": 3.714,
+      "spread": "high",
+      "returned": [
+        "KB0013608",
+        "KB0010265",
+        "KB0015622"
+      ],
+      "top_gt": false
+    },
+    {
+      "query": "outlook will not start up",
+      "expected": "KB0013608",
+      "intent": "ISSUE",
+      "predicted_top": "KB0013608",
+      "top_score": 3.169,
+      "spread": "high",
+      "returned": [
+        "KB0013608",
+        "KB0010265",
+        "KB0015622"
+      ],
+      "top_gt": false
+    },
+    {
+      "query": "my outlook app refuses to open",
+      "expected": "KB0013608",
+      "intent": "ISSUE",
+      "predicted_top": "KB0013608",
+      "top_score": 3.387,
+      "spread": "high",
+      "returned": [
+        "KB0013608",
+        "KB0010265",
+        "KB0015622"
+      ],
+      "top_gt": false
+    },
+    {
+      "query": "clicking outlook does nothing it never opens",
+      "expected": "KB0013608",
+      "intent": "ISSUE",
+      "predicted_top": "KB0013608",
+      "top_score": 3.263,
+      "spread": "low",
+      "returned": [
+        "KB0013608",
+        "KB0010265",
+        "KB0015622"
+      ],
+      "top_gt": false
+    },
+    {
+      "query": "outlook crashes when I click the calendar",
+      "expected": "KB0015622",
+      "intent": "ISSUE",
+      "predicted_top": "KB0015622",
+      "top_score": 3.5,
+      "spread": "low",
+      "returned": [
+        "KB0015622",
+        "KB0013608",
+        "KB0010265"
+      ],
+      "top_gt": false
+    },
+    {
+      "query": "every time I open calendar outlook closes",
+      "expected": "KB0015622",
+      "intent": "ISSUE",
+      "predicted_top": "KB0013608",
+      "top_score": 3.106,
+      "spread": "high",
+      "returned": [
+        "KB0013608",
+        "KB0015622",
+        "KB0010265"
+      ],
+      "top_gt": false
+    },
+    {
+      "query": "the calendar tab makes outlook crash",
+      "expected": "KB0015622",
+      "intent": "ISSUE",
+      "predicted_top": "KB0015622",
+      "top_score": 3.559,
+      "spread": "low",
+      "returned": [
+        "KB0015622",
+        "KB0013608",
+        "KB0010265"
+      ],
+      "top_gt": false
+    },
+    {
+      "query": "outlook shuts down whenever I go to calendar",
+      "expected": "KB0015622",
+      "intent": "ISSUE",
+      "predicted_top": "KB0015622",
+      "top_score": 2.856,
+      "spread": "high",
+      "returned": [
+        "KB0015622",
+        "KB0013608",
+        "KB0010265"
+      ],
+      "top_gt": false
+    },
+    {
+      "query": "clicking calendar crashes my outlook",
+      "expected": "KB0015622",
+      "intent": "ISSUE",
+      "predicted_top": "KB0015622",
+      "top_score": 3.465,
+      "spread": "low",
+      "returned": [
+        "KB0015622",
+        "KB0013608",
+        "KB0010265"
+      ],
+      "top_gt": false
+    },
+    {
+      "query": "outlook keeps crashing on the calendar view",
+      "expected": "KB0015622",
+      "intent": "ISSUE",
+      "predicted_top": "KB0015622",
+      "top_score": 3.194,
+      "spread": "low",
+      "returned": [
+        "KB0015622",
+        "KB0013608",
+        "KB0010265"
+      ],
+      "top_gt": false
+    },
+    {
+      "query": "calendar tab crash in outlook",
+      "expected": "KB0015622",
+      "intent": "ISSUE",
+      "predicted_top": "KB0015622",
+      "top_score": 3.51,
+      "spread": "low",
+      "returned": [
+        "KB0015622",
+        "KB0013608",
+        "KB0010265"
+      ],
+      "top_gt": false
+    },
+    {
+      "query": "outlook dies when I switch to calendar",
+      "expected": "KB0015622",
+      "intent": "ISSUE",
+      "predicted_top": "KB0013608",
+      "top_score": 2.572,
+      "spread": "high",
+      "returned": [
+        "KB0013608",
+        "KB0015622",
+        "KB0010265"
+      ],
+      "top_gt": false
+    },
+    {
+      "query": "my emails are stuck in the outbox",
+      "expected": "KB0015711",
+      "intent": "ISSUE",
+      "predicted_top": "KB0015711",
+      "top_score": 2.946,
+      "spread": "high",
+      "returned": [
+        "KB0015711",
+        "KB0010265",
+        "KB0010863"
+      ],
+      "top_gt": true
+    },
+    {
+      "query": "email won't send it just stays in outbox",
+      "expected": "KB0015711",
+      "intent": "ISSUE",
+      "predicted_top": "KB0015711",
+      "top_score": 3.219,
+      "spread": "low",
+      "returned": [
+        "KB0015711",
+        "KB0016493",
+        "KB0010265"
+      ],
+      "top_gt": true
+    },
+    {
+      "query": "messages sitting in outbox not going out",
+      "expected": "KB0015711",
+      "intent": "ISSUE",
+      "predicted_top": "KB0015711",
+      "top_score": 2.645,
+      "spread": "high",
+      "returned": [
+        "KB0015711",
+        "KB0013608",
+        "KB0016493"
+      ],
+      "top_gt": true
+    },
+    {
+      "query": "outlook not sending mail stuck in outbox",
+      "expected": "KB0015711",
+      "intent": "ISSUE",
+      "predicted_top": "KB0015711",
+      "top_score": 3.309,
+      "spread": "low",
+      "returned": [
+        "KB0015711",
+        "KB0010265",
+        "KB0016493"
+      ],
+      "top_gt": true
+    },
+    {
+      "query": "my mail only sends after I hit send receive",
+      "expected": "KB0015711",
+      "intent": "ISSUE",
+      "predicted_top": "KB0015711",
+      "top_score": 2.373,
+      "spread": "high",
+      "returned": [
+        "KB0015711",
+        "KB0016493",
+        "KB0010865"
+      ],
+      "top_gt": true
+    },
+    {
+      "query": "emails are not sending immediately they wait in outbox",
+      "expected": "KB0015711",
+      "intent": "ISSUE",
+      "predicted_top": "KB0015711",
+      "top_score": 3.289,
+      "spread": "low",
+      "returned": [
+        "KB0015711",
+        "KB0016493",
+        "KB0010265"
+      ],
+      "top_gt": true
+    },
+    {
+      "query": "outbox messages won't deliver",
+      "expected": "KB0015711",
+      "intent": "ISSUE",
+      "predicted_top": "KB0015711",
+      "top_score": 2.598,
+      "spread": "high",
+      "returned": [
+        "KB0015711",
+        "KB0010265",
+        "KB0016493"
+      ],
+      "top_gt": true
+    },
+    {
+      "query": "sent email stuck and not leaving outbox",
+      "expected": "KB0015711",
+      "intent": "ISSUE",
+      "predicted_top": "KB0015711",
+      "top_score": 2.885,
+      "spread": "high",
+      "returned": [
+        "KB0015711",
+        "KB0016493",
+        "KB0010265"
+      ],
+      "top_gt": true
+    },
+    {
+      "query": "I don't get meeting notifications",
+      "expected": "KB0016162",
+      "intent": "ISSUE",
+      "predicted_top": "KB0016162",
+      "top_score": 3.002,
+      "spread": "low",
+      "returned": [
+        "KB0016162",
+        "KB0010265",
+        "KB0016493"
+      ],
+      "top_gt": false
+    },
+    {
+      "query": "not receiving meeting request alerts",
+      "expected": "KB0016162",
+      "intent": "ISSUE",
+      "predicted_top": "KB0016162",
+      "top_score": 3.248,
+      "spread": "low",
+      "returned": [
+        "KB0016162",
+        "KB0010265",
+        "KB0013608"
+      ],
+      "top_gt": false
+    },
+    {
+      "query": "meetings go straight to my calendar without notifying me",
+      "expected": "KB0016162",
+      "intent": "ISSUE",
+      "predicted_top": "KB0016162",
+      "top_score": 3.003,
+      "spread": "low",
+      "returned": [
+        "KB0016162",
+        "KB0016493",
+        "KB0010265"
+      ],
+      "top_gt": false
+    },
+    {
+      "query": "no popup when I get a meeting invite",
+      "expected": "KB0016162",
+      "intent": "ISSUE",
+      "predicted_top": "KB0016162",
+      "top_score": 2.206,
+      "spread": "high",
+      "returned": [
+        "KB0016162",
+        "KB0010265",
+        "KB0013608"
+      ],
+      "top_gt": false
+    },
+    {
+      "query": "meeting invites don't show any notification",
+      "expected": "KB0016162",
+      "intent": "ISSUE",
+      "predicted_top": "KB0016162",
+      "top_score": 2.902,
+      "spread": "high",
+      "returned": [
+        "KB0016162",
+        "KB0010265",
+        "KB0013608"
+      ],
+      "top_gt": false
+    },
+    {
+      "query": "I'm not notified about new meeting requests",
+      "expected": "KB0016162",
+      "intent": "ISSUE",
+      "predicted_top": "KB0016162",
+      "top_score": 2.456,
+      "spread": "high",
+      "returned": [
+        "KB0016162",
+        "KB0010265",
+        "KB0015711"
+      ],
+      "top_gt": false
+    },
+    {
+      "query": "calendar invites are added silently with no alert",
+      "expected": "KB0016162",
+      "intent": "ISSUE",
+      "predicted_top": "KB0016162",
+      "top_score": 2.313,
+      "spread": "high",
+      "returned": [
+        "KB0016162",
+        "KB0016493",
+        "KB0013608"
+      ],
+      "top_gt": false
+    },
+    {
+      "query": "missing notifications for meeting requests",
+      "expected": "KB0016162",
+      "intent": "ISSUE",
+      "predicted_top": "KB0016162",
+      "top_score": 3.049,
+      "spread": "low",
+      "returned": [
+        "KB0016162",
+        "KB0010265",
+        "KB0013608"
+      ],
+      "top_gt": false
+    },
+    {
+      "query": "how to turn off work offline in outlook",
+      "expected": "KB0016493",
+      "intent": "HOW_TO",
+      "predicted_top": "KB0016493",
+      "top_score": 3.703,
+      "spread": "low",
+      "returned": [
+        "KB0016493",
+        "KB0015711",
+        "KB0015622"
+      ],
+      "top_gt": true
+    },
+    {
+      "query": "outlook says working offline how do I fix",
+      "expected": "KB0016493",
+      "intent": "ISSUE",
+      "predicted_top": "KB0016493",
+      "top_score": 3.192,
+      "spread": "low",
+      "returned": [
+        "KB0016493",
+        "KB0015711",
+        "KB0010265"
+      ],
+      "top_gt": true
+    },
+    {
+      "query": "disable work offline mode",
+      "expected": "KB0016493",
+      "intent": "HOW_TO",
+      "predicted_top": "KB0016493",
+      "top_score": 3.317,
+      "spread": "low",
+      "returned": [
+        "KB0016493",
+        "KB0015711",
+        "KB0010265"
+      ],
+      "top_gt": true
+    },
+    {
+      "query": "my outlook is offline how do I reconnect",
+      "expected": "KB0016493",
+      "intent": "ISSUE",
+      "predicted_top": "KB0016493",
+      "top_score": 2.634,
+      "spread": "high",
+      "returned": [
+        "KB0016493",
+        "KB0015711",
+        "KB0010265"
+      ],
+      "top_gt": true
+    },
+    {
+      "query": "turn off offline mode so outlook goes back online",
+      "expected": "KB0016493",
+      "intent": "HOW_TO",
+      "predicted_top": "KB0016493",
+      "top_score": 2.956,
+      "spread": "high",
+      "returned": [
+        "KB0016493",
+        "KB0015711",
+        "KB0010265"
+      ],
+      "top_gt": true
+    },
+    {
+      "query": "outlook stuck in working offline",
+      "expected": "KB0016493",
+      "intent": "ISSUE",
+      "predicted_top": "KB0016493",
+      "top_score": 2.941,
+      "spread": "high",
+      "returned": [
+        "KB0016493",
+        "KB0015711",
+        "KB0010265"
+      ],
+      "top_gt": true
+    },
+    {
+      "query": "how do I get outlook out of offline mode",
+      "expected": "KB0016493",
+      "intent": "HOW_TO",
+      "predicted_top": "KB0016493",
+      "top_score": 3.209,
+      "spread": "low",
+      "returned": [
+        "KB0016493",
+        "KB0015711",
+        "KB0010265"
+      ],
+      "top_gt": true
+    },
+    {
+      "query": "switch outlook from offline to online",
+      "expected": "KB0016493",
+      "intent": "HOW_TO",
+      "predicted_top": "KB0016493",
+      "top_score": 2.576,
+      "spread": "high",
+      "returned": [
+        "KB0016493",
+        "KB0015711",
+        "KB0010265"
+      ],
+      "top_gt": true
+    },
+    {
+      "query": "how do I change my email signature",
+      "expected": null,
+      "intent": "HOW_TO",
+      "predicted_top": null,
+      "top_score": 1.509,
+      "spread": "low",
+      "returned": [],
+      "top_gt": null
+    },
+    {
+      "query": "microsoft teams won't start",
+      "expected": null,
+      "intent": "ISSUE",
+      "predicted_top": null,
+      "top_score": 1.857,
+      "spread": "low",
+      "returned": [],
+      "top_gt": null
+    },
+    {
+      "query": "how to reset my windows password",
+      "expected": null,
+      "intent": "HOW_TO",
+      "predicted_top": null,
+      "top_score": 0.766,
+      "spread": "low",
+      "returned": [],
+      "top_gt": null
+    },
+    {
+      "query": "my mouse is not working",
+      "expected": null,
+      "intent": "ISSUE",
+      "predicted_top": null,
+      "top_score": 0.872,
+      "spread": "low",
+      "returned": [],
+      "top_gt": null
+    },
+    {
+      "query": "how do I install excel",
+      "expected": null,
+      "intent": "HOW_TO",
+      "predicted_top": null,
+      "top_score": 0.747,
+      "spread": "low",
+      "returned": [],
+      "top_gt": null
+    },
+    {
+      "query": "set up out of office auto reply",
+      "expected": null,
+      "intent": "HOW_TO",
+      "predicted_top": null,
+      "top_score": 1.848,
+      "spread": "low",
+      "returned": [],
+      "top_gt": null
+    },
+    {
+      "query": "how to add a shared mailbox",
+      "expected": null,
+      "intent": "HOW_TO",
+      "predicted_top": null,
+      "top_score": 1.772,
+      "spread": "low",
+      "returned": [],
+      "top_gt": null
+    },
+    {
+      "query": "my printer is offline",
+      "expected": null,
+      "intent": "ISSUE",
+      "predicted_top": null,
+      "top_score": 1.361,
+      "spread": "low",
+      "returned": [],
+      "top_gt": null
+    },
+    {
+      "query": "what is the weather today",
+      "expected": null,
+      "intent": "OFFTOPIC",
+      "predicted_top": null,
+      "top_score": 1.649,
+      "spread": "low",
+      "returned": [],
+      "top_gt": null
+    },
+    {
+      "query": "how do I create a rule to move emails to a folder",
+      "expected": null,
+      "intent": "HOW_TO",
+      "predicted_top": null,
+      "top_score": 1.838,
+      "spread": "low",
+      "returned": [],
+      "top_gt": null
+    }
+  ]
+}

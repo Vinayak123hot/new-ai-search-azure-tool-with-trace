@@ -1,0 +1,13 @@
+# Requirements for the Application Insights / OpenTelemetry edition (teva-kb-otel).
+# Identical to requirements.txt PLUS the Azure Monitor OpenTelemetry distro.
+# The base requirements.txt is left untouched.
+fastapi==0.115.0
+uvicorn[standard]==0.30.6
+pydantic==2.7.4
+azure-search-documents==11.5.2
+azure-core==1.32.0
+azure-identity==1.17.1
+azure-keyvault-secrets==4.8.0
+azure-storage-blob==12.22.0
+python-docx==1.1.2
+azure-monitor-opentelemetry==1.8.8

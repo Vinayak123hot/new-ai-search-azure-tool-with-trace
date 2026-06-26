@@ -1,0 +1,76 @@
+{"query": "outlook is stuck on the loading screen", "expected_kb": "KB0010265", "intent": "ISSUE"}
+{"query": "my outlook freezes when it starts and then shows an error", "expected_kb": "KB0010265", "intent": "ISSUE"}
+{"query": "outlook hangs on loading profile and is not responding", "expected_kb": "KB0010265", "intent": "ISSUE"}
+{"query": "outlook is really slow and keeps freezing", "expected_kb": "KB0010265", "intent": "ISSUE"}
+{"query": "otulook stuck loading then crashes with an error", "expected_kb": "KB0010265", "intent": "ISSUE"}
+{"query": "outlook performance is terrible it freezes constantly", "expected_kb": "KB0010265", "intent": "ISSUE"}
+{"query": "the outlook window opens but just hangs on loading", "expected_kb": "KB0010265", "intent": "ISSUE"}
+{"query": "outlook not responding stuck on starting screen", "expected_kb": "KB0010265", "intent": "ISSUE"}
+{"query": "email client is frozen on the splash screen", "expected_kb": "KB0010265", "intent": "ISSUE"}
+{"query": "outlook takes forever to load and errors out", "expected_kb": "KB0010265", "intent": "ISSUE"}
+{"query": "how do I rebuild my outlook profile", "expected_kb": "KB0010863", "intent": "HOW_TO"}
+{"query": "steps to recreate my OST file", "expected_kb": "KB0010863", "intent": "HOW_TO"}
+{"query": "how to rebuild a corrupt outlook profile", "expected_kb": "KB0010863", "intent": "HOW_TO"}
+{"query": "i need to recreate my mail profile in outlook", "expected_kb": "KB0010863", "intent": "HOW_TO"}
+{"query": "how can I rebuild the ost data file", "expected_kb": "KB0010863", "intent": "HOW_TO"}
+{"query": "rebuild user profile outlook how to", "expected_kb": "KB0010863", "intent": "HOW_TO"}
+{"query": "what are the steps to set up a fresh outlook profile", "expected_kb": "KB0010863", "intent": "HOW_TO"}
+{"query": "my outlook profile is broken how do I rebuild it", "expected_kb": "KB0010863", "intent": "HOW_TO"}
+{"query": "the phishing add-in got disabled", "expected_kb": "KB0010865", "intent": "ISSUE"}
+{"query": "my report spam button disappeared from outlook", "expected_kb": "KB0010865", "intent": "ISSUE"}
+{"query": "how do I re-enable an add-in that was automatically disabled", "expected_kb": "KB0010865", "intent": "HOW_TO"}
+{"query": "report phishing addin is greyed out", "expected_kb": "KB0010865", "intent": "ISSUE"}
+{"query": "outlook disabled my phishing reporting add in", "expected_kb": "KB0010865", "intent": "ISSUE"}
+{"query": "the report message add-in keeps getting turned off", "expected_kb": "KB0010865", "intent": "ISSUE"}
+{"query": "how to turn the auto-disabled spam add-in back on", "expected_kb": "KB0010865", "intent": "HOW_TO"}
+{"query": "phishing button missing from my ribbon", "expected_kb": "KB0010865", "intent": "ISSUE"}
+{"query": "outlook won't open at all", "expected_kb": "KB0013608", "intent": "ISSUE"}
+{"query": "nothing happens when I click the outlook icon", "expected_kb": "KB0013608", "intent": "ISSUE"}
+{"query": "i can't get outlook to start", "expected_kb": "KB0013608", "intent": "ISSUE"}
+{"query": "outlook does not launch when I double click it", "expected_kb": "KB0013608", "intent": "ISSUE"}
+{"query": "unable to open microsoft outlook", "expected_kb": "KB0013608", "intent": "ISSUE"}
+{"query": "outlook will not start up", "expected_kb": "KB0013608", "intent": "ISSUE"}
+{"query": "my outlook app refuses to open", "expected_kb": "KB0013608", "intent": "ISSUE"}
+{"query": "clicking outlook does nothing it never opens", "expected_kb": "KB0013608", "intent": "ISSUE"}
+{"query": "outlook crashes when I click the calendar", "expected_kb": "KB0015622", "intent": "ISSUE"}
+{"query": "every time I open calendar outlook closes", "expected_kb": "KB0015622", "intent": "ISSUE"}
+{"query": "the calendar tab makes outlook crash", "expected_kb": "KB0015622", "intent": "ISSUE"}
+{"query": "outlook shuts down whenever I go to calendar", "expected_kb": "KB0015622", "intent": "ISSUE"}
+{"query": "clicking calendar crashes my outlook", "expected_kb": "KB0015622", "intent": "ISSUE"}
+{"query": "outlook keeps crashing on the calendar view", "expected_kb": "KB0015622", "intent": "ISSUE"}
+{"query": "calendar tab crash in outlook", "expected_kb": "KB0015622", "intent": "ISSUE"}
+{"query": "outlook dies when I switch to calendar", "expected_kb": "KB0015622", "intent": "ISSUE"}
+{"query": "my emails are stuck in the outbox", "expected_kb": "KB0015711", "intent": "ISSUE"}
+{"query": "email won't send it just stays in outbox", "expected_kb": "KB0015711", "intent": "ISSUE"}
+{"query": "messages sitting in outbox not going out", "expected_kb": "KB0015711", "intent": "ISSUE"}
+{"query": "outlook not sending mail stuck in outbox", "expected_kb": "KB0015711", "intent": "ISSUE"}
+{"query": "my mail only sends after I hit send receive", "expected_kb": "KB0015711", "intent": "ISSUE"}
+{"query": "emails are not sending immediately they wait in outbox", "expected_kb": "KB0015711", "intent": "ISSUE"}
+{"query": "outbox messages won't deliver", "expected_kb": "KB0015711", "intent": "ISSUE"}
+{"query": "sent email stuck and not leaving outbox", "expected_kb": "KB0015711", "intent": "ISSUE"}
+{"query": "I don't get meeting notifications", "expected_kb": "KB0016162", "intent": "ISSUE"}
+{"query": "not receiving meeting request alerts", "expected_kb": "KB0016162", "intent": "ISSUE"}
+{"query": "meetings go straight to my calendar without notifying me", "expected_kb": "KB0016162", "intent": "ISSUE"}
+{"query": "no popup when I get a meeting invite", "expected_kb": "KB0016162", "intent": "ISSUE"}
+{"query": "meeting invites don't show any notification", "expected_kb": "KB0016162", "intent": "ISSUE"}
+{"query": "I'm not notified about new meeting requests", "expected_kb": "KB0016162", "intent": "ISSUE"}
+{"query": "calendar invites are added silently with no alert", "expected_kb": "KB0016162", "intent": "ISSUE"}
+{"query": "missing notifications for meeting requests", "expected_kb": "KB0016162", "intent": "ISSUE"}
+{"query": "how to turn off work offline in outlook", "expected_kb": "KB0016493", "intent": "HOW_TO"}
+{"query": "outlook says working offline how do I fix", "expected_kb": "KB0016493", "intent": "ISSUE"}
+{"query": "disable work offline mode", "expected_kb": "KB0016493", "intent": "HOW_TO"}
+{"query": "my outlook is offline how do I reconnect", "expected_kb": "KB0016493", "intent": "ISSUE"}
+{"query": "turn off offline mode so outlook goes back online", "expected_kb": "KB0016493", "intent": "HOW_TO"}
+{"query": "outlook stuck in working offline", "expected_kb": "KB0016493", "intent": "ISSUE"}
+{"query": "how do I get outlook out of offline mode", "expected_kb": "KB0016493", "intent": "HOW_TO"}
+{"query": "switch outlook from offline to online", "expected_kb": "KB0016493", "intent": "HOW_TO"}
+{"query": "how do I change my email signature", "expected_kb": "NONE", "intent": "HOW_TO"}
+{"query": "microsoft teams won't start", "expected_kb": "NONE", "intent": "ISSUE"}
+{"query": "how to reset my windows password", "expected_kb": "NONE", "intent": "HOW_TO"}
+{"query": "my mouse is not working", "expected_kb": "NONE", "intent": "ISSUE"}
+{"query": "how do I install excel", "expected_kb": "NONE", "intent": "HOW_TO"}
+{"query": "set up out of office auto reply", "expected_kb": "NONE", "intent": "HOW_TO"}
+{"query": "how to add a shared mailbox", "expected_kb": "NONE", "intent": "HOW_TO"}
+{"query": "my printer is offline", "expected_kb": "NONE", "intent": "ISSUE"}
+{"query": "what is the weather today", "expected_kb": "NONE", "intent": "OFFTOPIC"}
+{"query": "how do I create a rule to move emails to a folder", "expected_kb": "NONE", "intent": "HOW_TO"}

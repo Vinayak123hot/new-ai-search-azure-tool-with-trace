@@ -1,0 +1,85 @@
+[
+  {
+    "kb_id": "KB0010265",
+    "title": "(GLOBAL) Outlook Performance Troubleshooting",
+    "guidance_troubleshoot": true,
+    "environment": "Windows 10 / Windows 11, Outlook 2016 / Outlook O365",
+    "symptoms": [
+      "Outlook's loading screen gets stuck and eventually shows an error message."
+    ],
+    "source_file": "KB0010265.docx"
+  },
+  {
+    "kb_id": "KB0010863",
+    "title": "(GLOBAL) How to Rebuild User's Profile in Outlook",
+    "guidance_troubleshoot": false,
+    "environment": "Microsoft Outlook",
+    "symptoms": [
+      "How do I rebuild an OST profile in Outlook?"
+    ],
+    "source_file": "KB0010863.docx"
+  },
+  {
+    "kb_id": "KB0010865",
+    "title": "(GLOBAL) Outlook Phishing Add-in Auto Disabled",
+    "guidance_troubleshoot": true,
+    "environment": "Microsoft Outlook",
+    "symptoms": [
+      "How do I enable an auto-disabled add-in in Outlook?",
+      "The Phishing / Report Spam add-in has been automatically disabled."
+    ],
+    "source_file": "KB0010865.docx"
+  },
+  {
+    "kb_id": "KB0013608",
+    "title": "(GLOBAL) Can't Open Microsoft Outlook",
+    "guidance_troubleshoot": false,
+    "environment": "Microsoft Outlook",
+    "symptoms": [
+      "Microsoft Outlook will not open."
+    ],
+    "source_file": "KB0013608.docx"
+  },
+  {
+    "kb_id": "KB0015622",
+    "title": "(GLOBAL) Microsoft Outlook Crashes While Clicking on the Calendar Tab",
+    "guidance_troubleshoot": false,
+    "environment": "Microsoft Outlook",
+    "symptoms": [
+      "Microsoft Outlook crashes after clicking on the Calendar tab."
+    ],
+    "source_file": "KB0015622.docx"
+  },
+  {
+    "kb_id": "KB0015711",
+    "title": "(GLOBAL) Outlook – Email Stuck in Outbox, Not Sent Immediately",
+    "guidance_troubleshoot": true,
+    "environment": "Microsoft Outlook",
+    "symptoms": [
+      "Email stays in the Outbox folder until a Send/Receive operation is manually triggered."
+    ],
+    "source_file": "KB0015711.docx"
+  },
+  {
+    "kb_id": "KB0016162",
+    "title": "(GLOBAL) Not Receiving Meeting Notifications",
+    "guidance_troubleshoot": false,
+    "environment": "Outlook 2010, 2013, O365",
+    "symptoms": [
+      "Meetings are going straight to the Calendar without any notification.",
+      "Not receiving meeting request notifications."
+    ],
+    "source_file": "KB0016162.docx"
+  },
+  {
+    "kb_id": "KB0016493",
+    "title": "(GLOBAL) How to Turn Off 'Work Offline' in Outlook",
+    "guidance_troubleshoot": true,
+    "environment": "Microsoft Outlook",
+    "symptoms": [
+      "How do I turn off Work Offline in Outlook 2016?",
+      "Outlook status shows Working Offline."
+    ],
+    "source_file": "KB0016493.docx"
+  }
+]

@@ -1,0 +1,34 @@
+{
+  "_comment": "Central eval config. Mirrors the teva-kb-trace app settings so the harness scores against the SAME thresholds the agent uses in production. Secrets (TOOL_API_KEY, AZURE_OPENAI_KEY) are read from ENV, never stored here. Scaling 8->200 docs changes NOTHING in this file unless you deliberately retune thresholds.",
+
+  "endpoint": "https://teva-kb-trace.azurewebsites.net",
+
+  "thresholds": {
+    "MIN_SCORE": 1.9,
+    "DISPLAY_MIN_SCORE": 2.8,
+    "HIGH_CONFIDENCE": 3.2,
+    "SPREAD_THRESHOLD": 0.4,
+    "RETURN_K": 3
+  },
+
+  "agent": {
+    "azure_openai_endpoint": "https://teva.openai.azure.com",
+    "deployment": "gpt-5.4-mini",
+    "api_version": "2024-12-01-preview",
+    "instructions_file": "agent_instructions_testagent.txt",
+    "max_rounds": 5,
+    "max_steps": 16
+  },
+
+  "threshold_sweep": [2.0, 2.2, 2.4, 2.6, 2.8, 3.0, 3.2, 3.4],
+
+  "gates": {
+    "_comment": "CI regression gate. run_all.py exits non-zero if any actual metric falls below its target. Tune as the corpus grows; these are starting targets for the 8-doc baseline.",
+    "layer1_recall_at_k": 0.98,
+    "layer1_top1": 0.85,
+    "layer2_out_of_kb_rejection": 0.90,
+    "layer2_display_precision": 0.85,
+    "layer3_clarification_trigger": 0.75,
+    "layer4_end_to_end_top1": 0.90
+  }
+}

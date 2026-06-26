@@ -1,0 +1,575 @@
+{
+  "generated": "2026-06-22T10:44:29",
+  "endpoint": "https://teva-kb-trace.azurewebsites.net",
+  "deployment": "gpt-5.4-mini",
+  "total_cases": 83,
+  "skipped_layers": [],
+  "agent_runs": 3,
+  "metrics": {
+    "1": {
+      "cases": 73,
+      "recall_at_k": 98.6,
+      "top1": 84.9,
+      "mrr": 0.918,
+      "k": 3,
+      "per_doc_top1": {
+        "KB0010265": "10/12",
+        "KB0010863": "6/8",
+        "KB0010865": "8/9",
+        "KB0013608": "7/9",
+        "KB0015622": "6/9",
+        "KB0015711": "8/8",
+        "KB0016162": "9/9",
+        "KB0016493": "8/9"
+      }
+    },
+    "2": {
+      "display_min_score_in_use": 2.8,
+      "strong_cases": 66,
+      "weak_cases": 3,
+      "out_of_kb_cases": 10,
+      "display_precision": 100.0,
+      "display_recall": 75.8,
+      "out_of_kb_rejection": 100.0,
+      "weak_correctly_held": 66.7,
+      "threshold_sweep": [
+        {
+          "display_min_score": 2.0,
+          "display_recall_pct": 100.0,
+          "false_display_pct": 0.0
+        },
+        {
+          "display_min_score": 2.2,
+          "display_recall_pct": 98.5,
+          "false_display_pct": 0.0
+        },
+        {
+          "display_min_score": 2.4,
+          "display_recall_pct": 92.4,
+          "false_display_pct": 0.0
+        },
+        {
+          "display_min_score": 2.6,
+          "display_recall_pct": 81.8,
+          "false_display_pct": 0.0
+        },
+        {
+          "display_min_score": 2.8,
+          "display_recall_pct": 75.8,
+          "false_display_pct": 0.0
+        },
+        {
+          "display_min_score": 3.0,
+          "display_recall_pct": 57.6,
+          "false_display_pct": 0.0
+        },
+        {
+          "display_min_score": 3.2,
+          "display_recall_pct": 40.9,
+          "false_display_pct": 0.0
+        },
+        {
+          "display_min_score": 3.4,
+          "display_recall_pct": 21.2,
+          "false_display_pct": 0.0
+        }
+      ]
+    },
+    "3": {
+      "ambiguous_cases": 4.0,
+      "spread_high_on_first": 100.0,
+      "clarification_trigger": 75.0,
+      "questions_grounded": 77.8,
+      "resolved_after_followup": 66.7,
+      "avg_rounds": 2.1
+    },
+    "4": {
+      "in_kb_cases": 73.0,
+      "out_of_kb_cases": 10.0,
+      "end_to_end_top1": 88.6,
+      "out_of_kb_correct": 93.3,
+      "guidance_routing": 57.2,
+      "avg_rounds": 1.5
+    }
+  },
+  "metrics_std": {
+    "3": {
+      "ambiguous_cases": 0.0,
+      "spread_high_on_first": 0.0,
+      "clarification_trigger": 0.0,
+      "questions_grounded": 15.7,
+      "resolved_after_followup": 11.8,
+      "avg_rounds": 0.4
+    },
+    "4": {
+      "in_kb_cases": 0.0,
+      "out_of_kb_cases": 0.0,
+      "end_to_end_top1": 0.6,
+      "out_of_kb_correct": 9.4,
+      "guidance_routing": 3.0,
+      "avg_rounds": 0.1
+    }
+  },
+  "gate": [
+    {
+      "check": "layer1_recall_at_k",
+      "target": 0.98,
+      "actual": 98.6,
+      "status": "PASS"
+    },
+    {
+      "check": "layer1_top1",
+      "target": 0.85,
+      "actual": 84.9,
+      "status": "FAIL"
+    },
+    {
+      "check": "layer2_out_of_kb_rejection",
+      "target": 0.9,
+      "actual": 100.0,
+      "status": "PASS"
+    },
+    {
+      "check": "layer2_display_precision",
+      "target": 0.85,
+      "actual": 100.0,
+      "status": "PASS"
+    },
+    {
+      "check": "layer3_clarification_trigger",
+      "target": 0.75,
+      "actual": 75.0,
+      "status": "PASS"
+    },
+    {
+      "check": "layer4_end_to_end_top1",
+      "target": 0.9,
+      "actual": 88.6,
+      "status": "FAIL"
+    }
+  ],
+  "details": {
+    "1": {
+      "layer": 1,
+      "name": "retrieval",
+      "metrics": {
+        "cases": 73,
+        "recall_at_k": 98.6,
+        "top1": 84.9,
+        "mrr": 0.918,
+        "k": 3,
+        "per_doc_top1": {
+          "KB0010265": "10/12",
+          "KB0010863": "6/8",
+          "KB0010865": "8/9",
+          "KB0013608": "7/9",
+          "KB0015622": "6/9",
+          "KB0015711": "8/8",
+          "KB0016162": "9/9",
+          "KB0016493": "8/9"
+        }
+      },
+      "misses": [
+        {
+          "id": "KB0010265-04",
+          "query": "outlook is really slow and keeps freezing",
+          "expected": "KB0010265",
+          "predicted_top": "KB0015622",
+          "returned": [
+            "KB0015622",
+            "KB0010265",
+            "KB0013608"
+          ],
+          "top_score": 2.593,
+          "spread": "high"
+        },
+        {
+          "id": "KB0010265-06",
+          "query": "outlook performance is terrible it freezes constantly",
+          "expected": "KB0010265",
+          "predicted_top": "KB0015622",
+          "returned": [
+            "KB0015622",
+            "KB0010265",
+            "KB0015711"
+          ],
+          "top_score": 2.562,
+          "spread": "high"
+        },
+        {
+          "id": "KB0010863-03",
+          "query": "how to rebuild a corrupt outlook profile",
+          "expected": "KB0010863",
+          "predicted_top": "KB0010265",
+          "returned": [
+            "KB0010265",
+            "KB0010863",
+            "KB0015622"
+          ],
+          "top_score": 2.969,
+          "spread": "high"
+        },
+        {
+          "id": "KB0010863-04",
+          "query": "i need to recreate my mail profile in outlook",
+          "expected": "KB0010863",
+          "predicted_top": "KB0010265",
+          "returned": [
+            "KB0010265",
+            "KB0010863",
+            "KB0015711"
+          ],
+          "top_score": 2.98,
+          "spread": "high"
+        },
+        {
+          "id": "KB0013608-02",
+          "query": "nothing happens when I click the outlook icon",
+          "expected": "KB0013608",
+          "predicted_top": "KB0015622",
+          "returned": [
+            "KB0015622",
+            "KB0013608",
+            "KB0010265"
+          ],
+          "top_score": 2.527,
+          "spread": "high"
+        },
+        {
+          "id": "KB0015622-02",
+          "query": "every time I open calendar outlook closes",
+          "expected": "KB0015622",
+          "predicted_top": "KB0013608",
+          "returned": [
+            "KB0013608",
+            "KB0015622",
+            "KB0010265"
+          ],
+          "top_score": 3.106,
+          "spread": "high"
+        },
+        {
+          "id": "KB0015622-08",
+          "query": "outlook dies when I switch to calendar",
+          "expected": "KB0015622",
+          "predicted_top": "KB0013608",
+          "returned": [
+            "KB0013608",
+            "KB0015622",
+            "KB0010265"
+          ],
+          "top_score": 2.572,
+          "spread": "high"
+        },
+        {
+          "id": "WEAK-01",
+          "query": "something seems off with my outlook calendar",
+          "expected": "KB0015622",
+          "predicted_top": "KB0013608",
+          "returned": [
+            "KB0013608",
+            "KB0015622",
+            "KB0016162"
+          ],
+          "top_score": 2.703,
+          "spread": "high"
+        },
+        {
+          "id": "WEAK-02",
+          "query": "i think there is an add-in problem in outlook",
+          "expected": "KB0010865",
+          "predicted_top": "KB0010265",
+          "returned": [
+            "KB0010265",
+            "KB0010865",
+            "KB0015622"
+          ],
+          "top_score": 3.222,
+          "spread": "low"
+        },
+        {
+          "id": "CLAR-01",
+          "query": "my email isn't working in outlook",
+          "expected": "KB0016493",
+          "predicted_top": "KB0015711",
+          "returned": [
+            "KB0015711",
+            "KB0010265",
+            "KB0013608"
+          ],
+          "top_score": 2.795,
+          "spread": "high"
+        },
+        {
+          "id": "CLAR-04",
+          "query": "outlook stopped working after i restarted my pc",
+          "expected": "KB0013608",
+          "predicted_top": "KB0010265",
+          "returned": [
+            "KB0010265",
+            "KB0013608",
+            "KB0015622"
+          ],
+          "top_score": 2.937,
+          "spread": "high"
+        }
+      ]
+    },
+    "2": {
+      "layer": 2,
+      "name": "threshold",
+      "metrics": {
+        "display_min_score_in_use": 2.8,
+        "strong_cases": 66,
+        "weak_cases": 3,
+        "out_of_kb_cases": 10,
+        "display_precision": 100.0,
+        "display_recall": 75.8,
+        "out_of_kb_rejection": 100.0,
+        "weak_correctly_held": 66.7,
+        "threshold_sweep": [
+          {
+            "display_min_score": 2.0,
+            "display_recall_pct": 100.0,
+            "false_display_pct": 0.0
+          },
+          {
+            "display_min_score": 2.2,
+            "display_recall_pct": 98.5,
+            "false_display_pct": 0.0
+          },
+          {
+            "display_min_score": 2.4,
+            "display_recall_pct": 92.4,
+            "false_display_pct": 0.0
+          },
+          {
+            "display_min_score": 2.6,
+            "display_recall_pct": 81.8,
+            "false_display_pct": 0.0
+          },
+          {
+            "display_min_score": 2.8,
+            "display_recall_pct": 75.8,
+            "false_display_pct": 0.0
+          },
+          {
+            "display_min_score": 3.0,
+            "display_recall_pct": 57.6,
+            "false_display_pct": 0.0
+          },
+          {
+            "display_min_score": 3.2,
+            "display_recall_pct": 40.9,
+            "false_display_pct": 0.0
+          },
+          {
+            "display_min_score": 3.4,
+            "display_recall_pct": 21.2,
+            "false_display_pct": 0.0
+          }
+        ]
+      },
+      "false_displays": []
+    },
+    "3": {
+      "layer": 3,
+      "name": "clarification",
+      "metrics": {
+        "ambiguous_cases": 4.0,
+        "spread_high_on_first": 100.0,
+        "clarification_trigger": 75.0,
+        "questions_grounded": 77.8,
+        "resolved_after_followup": 66.7,
+        "avg_rounds": 2.1
+      },
+      "rows": [
+        {
+          "id": "CLAR-01",
+          "spread_first": "high",
+          "asked_followup": true,
+          "rounds": 5,
+          "groundedness": 0.24,
+          "expected_after": "KB0016493",
+          "predicted": null,
+          "resolved": false
+        },
+        {
+          "id": "CLAR-02",
+          "spread_first": "high",
+          "asked_followup": true,
+          "rounds": 2,
+          "groundedness": 0.17,
+          "expected_after": "KB0010265",
+          "predicted": "KB0010265",
+          "resolved": true
+        },
+        {
+          "id": "CLAR-03",
+          "spread_first": "high",
+          "asked_followup": false,
+          "rounds": 0,
+          "groundedness": null,
+          "expected_after": "KB0016162",
+          "predicted": "KB0016162",
+          "resolved": true
+        },
+        {
+          "id": "CLAR-04",
+          "spread_first": "high",
+          "asked_followup": true,
+          "rounds": 3,
+          "groundedness": 0.28,
+          "expected_after": "KB0013608",
+          "predicted": "KB0013608",
+          "resolved": true
+        }
+      ],
+      "metrics_std": {
+        "ambiguous_cases": 0.0,
+        "spread_high_on_first": 0.0,
+        "clarification_trigger": 0.0,
+        "questions_grounded": 15.7,
+        "resolved_after_followup": 11.8,
+        "avg_rounds": 0.4
+      },
+      "per_run_metrics": {
+        "ambiguous_cases": [
+          4,
+          4,
+          4
+        ],
+        "spread_high_on_first": [
+          100.0,
+          100.0,
+          100.0
+        ],
+        "clarification_trigger": [
+          75.0,
+          75.0,
+          75.0
+        ],
+        "questions_grounded": [
+          66.7,
+          66.7,
+          100.0
+        ],
+        "resolved_after_followup": [
+          75.0,
+          50.0,
+          75.0
+        ],
+        "avg_rounds": [
+          1.5,
+          2.25,
+          2.5
+        ]
+      },
+      "n_runs": 3
+    },
+    "4": {
+      "layer": 4,
+      "name": "end_to_end",
+      "metrics": {
+        "in_kb_cases": 73.0,
+        "out_of_kb_cases": 10.0,
+        "end_to_end_top1": 88.6,
+        "out_of_kb_correct": 93.3,
+        "guidance_routing": 57.2,
+        "avg_rounds": 1.5
+      },
+      "misses": [
+        {
+          "id": "KB0010265-06",
+          "expected": "KB0010265",
+          "predicted": "KB0015622",
+          "rounds": 0
+        },
+        {
+          "id": "KB0013608-01",
+          "expected": "KB0013608",
+          "predicted": null,
+          "rounds": 5
+        },
+        {
+          "id": "KB0013608-04",
+          "expected": "KB0013608",
+          "predicted": null,
+          "rounds": 5
+        },
+        {
+          "id": "KB0015622-08",
+          "expected": "KB0015622",
+          "predicted": null,
+          "rounds": 5
+        },
+        {
+          "id": "KB0016162-06",
+          "expected": "KB0016162",
+          "predicted": null,
+          "rounds": 5
+        },
+        {
+          "id": "KB0016493-02",
+          "expected": "KB0016493",
+          "predicted": null,
+          "rounds": 5
+        },
+        {
+          "id": "CLAR-01",
+          "expected": "KB0016493",
+          "predicted": "KB0015711",
+          "rounds": 0
+        },
+        {
+          "id": "CLAR-04",
+          "expected": "KB0013608",
+          "predicted": null,
+          "rounds": 5
+        }
+      ],
+      "false_positives": [],
+      "metrics_std": {
+        "in_kb_cases": 0.0,
+        "out_of_kb_cases": 0.0,
+        "end_to_end_top1": 0.6,
+        "out_of_kb_correct": 9.4,
+        "guidance_routing": 3.0,
+        "avg_rounds": 0.1
+      },
+      "per_run_metrics": {
+        "in_kb_cases": [
+          73,
+          73,
+          73
+        ],
+        "out_of_kb_cases": [
+          10,
+          10,
+          10
+        ],
+        "end_to_end_top1": [
+          87.7,
+          89.0,
+          89.0
+        ],
+        "out_of_kb_correct": [
+          80.0,
+          100.0,
+          100.0
+        ],
+        "guidance_routing": [
+          53.1,
+          60.0,
+          58.5
+        ],
+        "avg_rounds": [
+          1.4,
+          1.52,
+          1.58
+        ]
+      },
+      "n_runs": 3
+    }
+  }
+}

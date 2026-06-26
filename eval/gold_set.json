@@ -1,0 +1,627 @@
+{
+  "schema_version": 2,
+  "description": "4-layer eval gold set. Each case: id, query, expected_kb (null=out-of-KB), intent (ISSUE|HOW_TO|OFFTOPIC), tier (strong|weak|ambiguous|out_of_kb). Ambiguous cases carry a 'dialog' with keyword->answer map and expected_after_followup to drive the multi-turn clarification layer. SCALING: to go from 8 to 200 docs, add KB entries to kb_meta.json and append cases here with the right tier — NO code/metric/gate changes are needed. Target ~10-20 cases per doc, covering each tier.",
+  "tier_legend": {
+    "strong": "clear, distinctive match — should be retrieved top-1 AND displayed (meets_display_threshold=true)",
+    "weak": "on-topic but vague — should be RETURNED (powers grounding) but NOT displayed as a resolution",
+    "ambiguous": "under-specified — should trigger spread=high and a follow-up question (see dialog)",
+    "out_of_kb": "no valid doc — should be rejected / no confident match (expected_kb=null)"
+  },
+  "cases": [
+    {
+      "id": "KB0010265-01",
+      "query": "outlook is stuck on the loading screen",
+      "expected_kb": "KB0010265",
+      "intent": "ISSUE",
+      "tier": "strong"
+    },
+    {
+      "id": "KB0010265-02",
+      "query": "my outlook freezes when it starts and then shows an error",
+      "expected_kb": "KB0010265",
+      "intent": "ISSUE",
+      "tier": "strong"
+    },
+    {
+      "id": "KB0010265-03",
+      "query": "outlook hangs on loading profile and is not responding",
+      "expected_kb": "KB0010265",
+      "intent": "ISSUE",
+      "tier": "strong"
+    },
+    {
+      "id": "KB0010265-04",
+      "query": "outlook is really slow and keeps freezing",
+      "expected_kb": "KB0010265",
+      "intent": "ISSUE",
+      "tier": "strong"
+    },
+    {
+      "id": "KB0010265-05",
+      "query": "otulook stuck loading then crashes with an error",
+      "expected_kb": "KB0010265",
+      "intent": "ISSUE",
+      "tier": "strong"
+    },
+    {
+      "id": "KB0010265-06",
+      "query": "outlook performance is terrible it freezes constantly",
+      "expected_kb": "KB0010265",
+      "intent": "ISSUE",
+      "tier": "strong"
+    },
+    {
+      "id": "KB0010265-07",
+      "query": "the outlook window opens but just hangs on loading",
+      "expected_kb": "KB0010265",
+      "intent": "ISSUE",
+      "tier": "strong"
+    },
+    {
+      "id": "KB0010265-08",
+      "query": "outlook not responding stuck on starting screen",
+      "expected_kb": "KB0010265",
+      "intent": "ISSUE",
+      "tier": "strong"
+    },
+    {
+      "id": "KB0010265-09",
+      "query": "email client is frozen on the splash screen",
+      "expected_kb": "KB0010265",
+      "intent": "ISSUE",
+      "tier": "strong"
+    },
+    {
+      "id": "KB0010265-10",
+      "query": "outlook takes forever to load and errors out",
+      "expected_kb": "KB0010265",
+      "intent": "ISSUE",
+      "tier": "strong"
+    },
+    {
+      "id": "KB0010863-01",
+      "query": "how do I rebuild my outlook profile",
+      "expected_kb": "KB0010863",
+      "intent": "HOW_TO",
+      "tier": "strong"
+    },
+    {
+      "id": "KB0010863-02",
+      "query": "steps to recreate my OST file",
+      "expected_kb": "KB0010863",
+      "intent": "HOW_TO",
+      "tier": "strong"
+    },
+    {
+      "id": "KB0010863-03",
+      "query": "how to rebuild a corrupt outlook profile",
+      "expected_kb": "KB0010863",
+      "intent": "HOW_TO",
+      "tier": "strong"
+    },
+    {
+      "id": "KB0010863-04",
+      "query": "i need to recreate my mail profile in outlook",
+      "expected_kb": "KB0010863",
+      "intent": "HOW_TO",
+      "tier": "strong"
+    },
+    {
+      "id": "KB0010863-05",
+      "query": "how can I rebuild the ost data file",
+      "expected_kb": "KB0010863",
+      "intent": "HOW_TO",
+      "tier": "strong"
+    },
+    {
+      "id": "KB0010863-06",
+      "query": "rebuild user profile outlook how to",
+      "expected_kb": "KB0010863",
+      "intent": "HOW_TO",
+      "tier": "strong"
+    },
+    {
+      "id": "KB0010863-07",
+      "query": "what are the steps to set up a fresh outlook profile",
+      "expected_kb": "KB0010863",
+      "intent": "HOW_TO",
+      "tier": "strong"
+    },
+    {
+      "id": "KB0010863-08",
+      "query": "my outlook profile is broken how do I rebuild it",
+      "expected_kb": "KB0010863",
+      "intent": "HOW_TO",
+      "tier": "strong"
+    },
+    {
+      "id": "KB0010865-01",
+      "query": "the phishing add-in got disabled",
+      "expected_kb": "KB0010865",
+      "intent": "ISSUE",
+      "tier": "strong"
+    },
+    {
+      "id": "KB0010865-02",
+      "query": "my report spam button disappeared from outlook",
+      "expected_kb": "KB0010865",
+      "intent": "ISSUE",
+      "tier": "strong"
+    },
+    {
+      "id": "KB0010865-03",
+      "query": "how do I re-enable an add-in that was automatically disabled",
+      "expected_kb": "KB0010865",
+      "intent": "HOW_TO",
+      "tier": "strong"
+    },
+    {
+      "id": "KB0010865-04",
+      "query": "report phishing addin is greyed out",
+      "expected_kb": "KB0010865",
+      "intent": "ISSUE",
+      "tier": "strong"
+    },
+    {
+      "id": "KB0010865-05",
+      "query": "outlook disabled my phishing reporting add in",
+      "expected_kb": "KB0010865",
+      "intent": "ISSUE",
+      "tier": "strong"
+    },
+    {
+      "id": "KB0010865-06",
+      "query": "the report message add-in keeps getting turned off",
+      "expected_kb": "KB0010865",
+      "intent": "ISSUE",
+      "tier": "strong"
+    },
+    {
+      "id": "KB0010865-07",
+      "query": "how to turn the auto-disabled spam add-in back on",
+      "expected_kb": "KB0010865",
+      "intent": "HOW_TO",
+      "tier": "strong"
+    },
+    {
+      "id": "KB0010865-08",
+      "query": "phishing button missing from my ribbon",
+      "expected_kb": "KB0010865",
+      "intent": "ISSUE",
+      "tier": "strong"
+    },
+    {
+      "id": "KB0013608-01",
+      "query": "outlook won't open at all",
+      "expected_kb": "KB0013608",
+      "intent": "ISSUE",
+      "tier": "strong"
+    },
+    {
+      "id": "KB0013608-02",
+      "query": "nothing happens when I click the outlook icon",
+      "expected_kb": "KB0013608",
+      "intent": "ISSUE",
+      "tier": "strong"
+    },
+    {
+      "id": "KB0013608-03",
+      "query": "i can't get outlook to start",
+      "expected_kb": "KB0013608",
+      "intent": "ISSUE",
+      "tier": "strong"
+    },
+    {
+      "id": "KB0013608-04",
+      "query": "outlook does not launch when I double click it",
+      "expected_kb": "KB0013608",
+      "intent": "ISSUE",
+      "tier": "strong"
+    },
+    {
+      "id": "KB0013608-05",
+      "query": "unable to open microsoft outlook",
+      "expected_kb": "KB0013608",
+      "intent": "ISSUE",
+      "tier": "strong"
+    },
+    {
+      "id": "KB0013608-06",
+      "query": "outlook will not start up",
+      "expected_kb": "KB0013608",
+      "intent": "ISSUE",
+      "tier": "strong"
+    },
+    {
+      "id": "KB0013608-07",
+      "query": "my outlook app refuses to open",
+      "expected_kb": "KB0013608",
+      "intent": "ISSUE",
+      "tier": "strong"
+    },
+    {
+      "id": "KB0013608-08",
+      "query": "clicking outlook does nothing it never opens",
+      "expected_kb": "KB0013608",
+      "intent": "ISSUE",
+      "tier": "strong"
+    },
+    {
+      "id": "KB0015622-01",
+      "query": "outlook crashes when I click the calendar",
+      "expected_kb": "KB0015622",
+      "intent": "ISSUE",
+      "tier": "strong"
+    },
+    {
+      "id": "KB0015622-02",
+      "query": "every time I open calendar outlook closes",
+      "expected_kb": "KB0015622",
+      "intent": "ISSUE",
+      "tier": "strong"
+    },
+    {
+      "id": "KB0015622-03",
+      "query": "the calendar tab makes outlook crash",
+      "expected_kb": "KB0015622",
+      "intent": "ISSUE",
+      "tier": "strong"
+    },
+    {
+      "id": "KB0015622-04",
+      "query": "outlook shuts down whenever I go to calendar",
+      "expected_kb": "KB0015622",
+      "intent": "ISSUE",
+      "tier": "strong"
+    },
+    {
+      "id": "KB0015622-05",
+      "query": "clicking calendar crashes my outlook",
+      "expected_kb": "KB0015622",
+      "intent": "ISSUE",
+      "tier": "strong"
+    },
+    {
+      "id": "KB0015622-06",
+      "query": "outlook keeps crashing on the calendar view",
+      "expected_kb": "KB0015622",
+      "intent": "ISSUE",
+      "tier": "strong"
+    },
+    {
+      "id": "KB0015622-07",
+      "query": "calendar tab crash in outlook",
+      "expected_kb": "KB0015622",
+      "intent": "ISSUE",
+      "tier": "strong"
+    },
+    {
+      "id": "KB0015622-08",
+      "query": "outlook dies when I switch to calendar",
+      "expected_kb": "KB0015622",
+      "intent": "ISSUE",
+      "tier": "strong"
+    },
+    {
+      "id": "KB0015711-01",
+      "query": "my emails are stuck in the outbox",
+      "expected_kb": "KB0015711",
+      "intent": "ISSUE",
+      "tier": "strong"
+    },
+    {
+      "id": "KB0015711-02",
+      "query": "email won't send it just stays in outbox",
+      "expected_kb": "KB0015711",
+      "intent": "ISSUE",
+      "tier": "strong"
+    },
+    {
+      "id": "KB0015711-03",
+      "query": "messages sitting in outbox not going out",
+      "expected_kb": "KB0015711",
+      "intent": "ISSUE",
+      "tier": "strong"
+    },
+    {
+      "id": "KB0015711-04",
+      "query": "outlook not sending mail stuck in outbox",
+      "expected_kb": "KB0015711",
+      "intent": "ISSUE",
+      "tier": "strong"
+    },
+    {
+      "id": "KB0015711-05",
+      "query": "my mail only sends after I hit send receive",
+      "expected_kb": "KB0015711",
+      "intent": "ISSUE",
+      "tier": "strong"
+    },
+    {
+      "id": "KB0015711-06",
+      "query": "emails are not sending immediately they wait in outbox",
+      "expected_kb": "KB0015711",
+      "intent": "ISSUE",
+      "tier": "strong"
+    },
+    {
+      "id": "KB0015711-07",
+      "query": "outbox messages won't deliver",
+      "expected_kb": "KB0015711",
+      "intent": "ISSUE",
+      "tier": "strong"
+    },
+    {
+      "id": "KB0015711-08",
+      "query": "sent email stuck and not leaving outbox",
+      "expected_kb": "KB0015711",
+      "intent": "ISSUE",
+      "tier": "strong"
+    },
+    {
+      "id": "KB0016162-01",
+      "query": "I don't get meeting notifications",
+      "expected_kb": "KB0016162",
+      "intent": "ISSUE",
+      "tier": "strong"
+    },
+    {
+      "id": "KB0016162-02",
+      "query": "not receiving meeting request alerts",
+      "expected_kb": "KB0016162",
+      "intent": "ISSUE",
+      "tier": "strong"
+    },
+    {
+      "id": "KB0016162-03",
+      "query": "meetings go straight to my calendar without notifying me",
+      "expected_kb": "KB0016162",
+      "intent": "ISSUE",
+      "tier": "strong"
+    },
+    {
+      "id": "KB0016162-04",
+      "query": "no popup when I get a meeting invite",
+      "expected_kb": "KB0016162",
+      "intent": "ISSUE",
+      "tier": "strong"
+    },
+    {
+      "id": "KB0016162-05",
+      "query": "meeting invites don't show any notification",
+      "expected_kb": "KB0016162",
+      "intent": "ISSUE",
+      "tier": "strong"
+    },
+    {
+      "id": "KB0016162-06",
+      "query": "I'm not notified about new meeting requests",
+      "expected_kb": "KB0016162",
+      "intent": "ISSUE",
+      "tier": "strong"
+    },
+    {
+      "id": "KB0016162-07",
+      "query": "calendar invites are added silently with no alert",
+      "expected_kb": "KB0016162",
+      "intent": "ISSUE",
+      "tier": "strong"
+    },
+    {
+      "id": "KB0016162-08",
+      "query": "missing notifications for meeting requests",
+      "expected_kb": "KB0016162",
+      "intent": "ISSUE",
+      "tier": "strong"
+    },
+    {
+      "id": "KB0016493-01",
+      "query": "how to turn off work offline in outlook",
+      "expected_kb": "KB0016493",
+      "intent": "HOW_TO",
+      "tier": "strong"
+    },
+    {
+      "id": "KB0016493-02",
+      "query": "outlook says working offline how do I fix",
+      "expected_kb": "KB0016493",
+      "intent": "ISSUE",
+      "tier": "strong"
+    },
+    {
+      "id": "KB0016493-03",
+      "query": "disable work offline mode",
+      "expected_kb": "KB0016493",
+      "intent": "HOW_TO",
+      "tier": "strong"
+    },
+    {
+      "id": "KB0016493-04",
+      "query": "my outlook is offline how do I reconnect",
+      "expected_kb": "KB0016493",
+      "intent": "ISSUE",
+      "tier": "strong"
+    },
+    {
+      "id": "KB0016493-05",
+      "query": "turn off offline mode so outlook goes back online",
+      "expected_kb": "KB0016493",
+      "intent": "HOW_TO",
+      "tier": "strong"
+    },
+    {
+      "id": "KB0016493-06",
+      "query": "outlook stuck in working offline",
+      "expected_kb": "KB0016493",
+      "intent": "ISSUE",
+      "tier": "strong"
+    },
+    {
+      "id": "KB0016493-07",
+      "query": "how do I get outlook out of offline mode",
+      "expected_kb": "KB0016493",
+      "intent": "HOW_TO",
+      "tier": "strong"
+    },
+    {
+      "id": "KB0016493-08",
+      "query": "switch outlook from offline to online",
+      "expected_kb": "KB0016493",
+      "intent": "HOW_TO",
+      "tier": "strong"
+    },
+    {
+      "id": "OOK-01",
+      "query": "how do I change my email signature",
+      "expected_kb": null,
+      "intent": "HOW_TO",
+      "tier": "out_of_kb"
+    },
+    {
+      "id": "OOK-02",
+      "query": "microsoft teams won't start",
+      "expected_kb": null,
+      "intent": "ISSUE",
+      "tier": "out_of_kb"
+    },
+    {
+      "id": "OOK-03",
+      "query": "how to reset my windows password",
+      "expected_kb": null,
+      "intent": "HOW_TO",
+      "tier": "out_of_kb"
+    },
+    {
+      "id": "OOK-04",
+      "query": "my mouse is not working",
+      "expected_kb": null,
+      "intent": "ISSUE",
+      "tier": "out_of_kb"
+    },
+    {
+      "id": "OOK-05",
+      "query": "how do I install excel",
+      "expected_kb": null,
+      "intent": "HOW_TO",
+      "tier": "out_of_kb"
+    },
+    {
+      "id": "OOK-06",
+      "query": "set up out of office auto reply",
+      "expected_kb": null,
+      "intent": "HOW_TO",
+      "tier": "out_of_kb"
+    },
+    {
+      "id": "OOK-07",
+      "query": "how to add a shared mailbox",
+      "expected_kb": null,
+      "intent": "HOW_TO",
+      "tier": "out_of_kb"
+    },
+    {
+      "id": "OOK-08",
+      "query": "my printer is offline",
+      "expected_kb": null,
+      "intent": "ISSUE",
+      "tier": "out_of_kb"
+    },
+    {
+      "id": "OOK-09",
+      "query": "what is the weather today",
+      "expected_kb": null,
+      "intent": "OFFTOPIC",
+      "tier": "out_of_kb"
+    },
+    {
+      "id": "OOK-10",
+      "query": "how do I create a rule to move emails to a folder",
+      "expected_kb": null,
+      "intent": "HOW_TO",
+      "tier": "out_of_kb"
+    },
+    {
+      "id": "WEAK-01",
+      "query": "something seems off with my outlook calendar",
+      "expected_kb": "KB0015622",
+      "intent": "ISSUE",
+      "tier": "weak"
+    },
+    {
+      "id": "WEAK-02",
+      "query": "i think there is an add-in problem in outlook",
+      "expected_kb": "KB0010865",
+      "intent": "ISSUE",
+      "tier": "weak"
+    },
+    {
+      "id": "WEAK-03",
+      "query": "my outlook is behaving weirdly today",
+      "expected_kb": "KB0010265",
+      "intent": "ISSUE",
+      "tier": "weak"
+    },
+    {
+      "id": "CLAR-01",
+      "query": "my email isn't working in outlook",
+      "expected_kb": "KB0016493",
+      "intent": "ISSUE",
+      "tier": "ambiguous",
+      "dialog": {
+        "answers": {
+          "offline": "yes, it says Working Offline at the bottom right",
+          "outbox": "no, nothing is stuck in the outbox",
+          "open": "no, outlook opens fine"
+        },
+        "expected_after_followup": "KB0016493"
+      }
+    },
+    {
+      "id": "CLAR-02",
+      "query": "outlook is acting up",
+      "expected_kb": "KB0010265",
+      "intent": "ISSUE",
+      "tier": "ambiguous",
+      "dialog": {
+        "answers": {
+          "loading": "yes, it hangs on the loading screen and then shows an error",
+          "stuck": "yes, stuck on loading",
+          "crash": "no, it does not crash",
+          "calendar": "no, not related to the calendar"
+        },
+        "expected_after_followup": "KB0010265"
+      }
+    },
+    {
+      "id": "CLAR-03",
+      "query": "i have a problem with meetings in outlook",
+      "expected_kb": "KB0016162",
+      "intent": "ISSUE",
+      "tier": "ambiguous",
+      "dialog": {
+        "answers": {
+          "notification": "yes, i don't get any popup or alert for new meeting invites",
+          "alert": "yes, no alert at all",
+          "calendar": "the invites just appear in the calendar silently"
+        },
+        "expected_after_followup": "KB0016162"
+      }
+    },
+    {
+      "id": "CLAR-04",
+      "query": "outlook stopped working after i restarted my pc",
+      "expected_kb": "KB0013608",
+      "intent": "ISSUE",
+      "tier": "ambiguous",
+      "dialog": {
+        "answers": {
+          "open": "it doesn't open at all, nothing happens when i click the icon",
+          "launch": "it never launches",
+          "loading": "no loading screen even appears",
+          "offline": "no offline message, it just won't start"
+        },
+        "expected_after_followup": "KB0013608"
+      }
+    }
+  ]
+}

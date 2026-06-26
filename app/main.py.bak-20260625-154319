@@ -1,0 +1,660 @@
+import os
+import re
+import math
+import logging
+from datetime import datetime, timezone, timedelta
+from io import BytesIO
+from fastapi import FastAPI, HTTPException, Header, Request
+from fastapi.responses import JSONResponse
+from pydantic import BaseModel
+from azure.search.documents import SearchClient
+from azure.search.documents.models import VectorizableTextQuery, QueryType
+from azure.core.credentials import AzureKeyCredential
+from azure.core.exceptions import ResourceNotFoundError
+from azure.identity import DefaultAzureCredential
+from azure.keyvault.secrets import SecretClient
+from azure.storage.blob import BlobServiceClient, generate_blob_sas, BlobSasPermissions
+import docx as python_docx
+
+# ── Non-sensitive config — stays in .env ──────────────────────────
+SEARCH_ENDPOINT       = os.environ["SEARCH_ENDPOINT"]
+SEARCH_INDEX          = os.environ["SEARCH_INDEX"]
+SEMANTIC_CONFIG_NAME  = os.environ["SEMANTIC_CONFIG_NAME"]
+SPREAD_THRESHOLD      = float(os.environ.get("SPREAD_THRESHOLD", "0.4"))
+# Retrieval floor: candidates below this are not returned at all. Kept LOW (1.9)
+# on purpose so that weak-but-plausible matches still flow to the agent and can
+# drive grounding follow-up questions. Do NOT raise this to the display threshold.
+MIN_SCORE             = float(os.environ.get("MIN_SCORE", "1.9"))
+# Display threshold: a matched candidate whose score is below this is considered
+# NOT good enough to surface a KB document to the user. Candidates between
+# MIN_SCORE and DISPLAY_MIN_SCORE are still returned (so grounding follow-up works),
+# but each candidate is flagged via `meets_display_threshold` so the agent can
+# deterministically decide whether to show a document or return the
+# "no valid document" handoff. This split is what lets sub-3.0 scores keep
+# powering follow-up questions without ever being displayed as a resolution.
+DISPLAY_MIN_SCORE     = float(os.environ.get("DISPLAY_MIN_SCORE", "3.0"))
+HIGH_CONFIDENCE       = float(os.environ.get("HIGH_CONFIDENCE", "3.0"))
+TOP_K                 = int(os.environ.get("TOP_K", "10"))
+RETURN_K              = int(os.environ.get("RETURN_K", "3"))
+TOP_SYMPTOMS_K        = int(os.environ.get("TOP_SYMPTOMS_K", "3"))   # max discriminating symptoms returned
+
+# ── Sensitive API keys — loaded from Azure Key Vault ──────────────
+try:
+    KV_URL        = os.environ["AZURE_KEY_VAULT_URL"]
+    credential    = DefaultAzureCredential()
+    kv_client     = SecretClient(vault_url=KV_URL, credential=credential)
+
+    SEARCH_API_KEY = kv_client.get_secret("search-api-key").value
+    TOOL_API_KEY   = kv_client.get_secret("tool-api-key").value
+
+    BLOB_ACCOUNT_URL    = os.environ["BLOB_ACCOUNT_URL"]
+    BLOB_CONTAINER_NAME = os.environ["BLOB_CONTAINER_NAME"]
+    blob_service        = BlobServiceClient(account_url=BLOB_ACCOUNT_URL, credential=credential)
+
+    print("✅ API keys successfully loaded from Key Vault")
+
+except KeyError as e:
+    raise RuntimeError(
+        f"❌ Missing environment variable: {e}. "
+        "Make sure AZURE_KEY_VAULT_URL is set in .env"
+    )
+except Exception as e:
+    raise RuntimeError(
+        f"❌ Failed to load secrets from Key Vault: {type(e).__name__}: {e}\n"
+        "  → Local dev: run 'az login' in terminal\n"
+        "  → Azure hosted: enable Managed Identity and assign Key Vault Secrets User role"
+    )
+
+# ── Logging setup ─────────────────────────────────────────────────
+logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s: %(message)s")
+logger = logging.getLogger("kb-tool")
+
+# ── Azure Search client ───────────────────────────────────────────
+search = SearchClient(SEARCH_ENDPOINT, SEARCH_INDEX, AzureKeyCredential(SEARCH_API_KEY))
+
+app = FastAPI(title="KB Candidates Tool")
+
+
+# ── Request models ────────────────────────────────────────────────
+class CandidateRequest(BaseModel):
+    description: str
+
+class GuidanceRequest(BaseModel):
+    kb_id: str
+
+
+# ── KB docx parser ────────────────────────────────────────────────
+_SKIP_PREFIXES  = ("kb id:", "guidance troubleshoot:")
+_KNOWN_SECTIONS = ("user experience", "symptoms:", "cause:", "resolution:")
+_OPTION_RE      = re.compile(r"^option\s*\d+", re.IGNORECASE)
+
+# Manual enumerator patterns — used only as a fallback when a KB doc uses
+# typed markers ("a.", "i.", "-") instead of Word's built-in list numbering.
+# Roman is checked before alpha so "ii."/"iv." are not mistaken for letters.
+# Letter 'i' is excluded from the alpha pattern to avoid clashing with roman i.
+_RE_NUM    = re.compile(r"^\(?\d+[.\)]\s*")
+_RE_ROMAN  = re.compile(r"^\(?(x|ix|v?i{1,3}|iv)[.\)]\s+", re.IGNORECASE)
+_RE_ALPHA  = re.compile(r"^\(?[a-hj-z][.\)]\s*", re.IGNORECASE)
+_RE_BULLET = re.compile(r"^[\u2022\u25CF\u25AA\u25E6\-\*]\s+")
+
+
+def _strip_marker(text: str):
+    """Strip a leading typed enumerator. Returns (clean_text, marker_level|None)."""
+    if _RE_BULLET.match(text):
+        return _RE_BULLET.sub("", text, count=1).strip(), 1
+    if _RE_ROMAN.match(text):
+        return _RE_ROMAN.sub("", text, count=1).strip(), 2
+    if _RE_ALPHA.match(text):
+        return _RE_ALPHA.sub("", text, count=1).strip(), 1
+    if _RE_NUM.match(text):
+        return _RE_NUM.sub("", text, count=1).strip(), 0
+    return text, None
+
+
+def _list_level(para, text: str):
+    """
+    Determine nesting level (0=main, 1=sub, 2=sub-sub) for a list paragraph,
+    using these signals in priority order:
+      1. Word numbering level (numPr/ilvl)  — authoritative when present
+      2. Left indent, bucketed at ~0.25in per level
+      3. A typed marker at the start of the text (a. / i. / bullet)
+    Returns (level:int in 0..2, clean_text:str with any redundant marker removed).
+    """
+    # 1. Word list level
+    try:
+        pPr = para._p.pPr
+        if pPr is not None and pPr.numPr is not None and pPr.numPr.ilvl is not None:
+            lvl = int(pPr.numPr.ilvl.val)
+            clean, _ = _strip_marker(text)
+            return max(0, min(lvl, 2)), clean
+    except Exception:
+        pass
+
+    # 2. Indent bucket
+    try:
+        li = para.paragraph_format.left_indent
+        if li is not None and li.inches and li.inches > 0:
+            lvl = int(round(li.inches / 0.25)) - 1
+            clean, _ = _strip_marker(text)
+            return max(0, min(lvl, 2)), clean
+    except Exception:
+        pass
+
+    # 3. Typed marker
+    clean, mlvl = _strip_marker(text)
+    if mlvl is not None:
+        return mlvl, clean
+    return 0, text
+
+
+def _parse_kb_docx(doc_bytes: bytes) -> dict:
+    doc = python_docx.Document(BytesIO(doc_bytes))
+
+    title, environment, note = "", "", ""
+    sections: list = []
+    current_section = None
+    first_normal = True
+
+    for para in doc.paragraphs:
+        text = para.text.strip()
+        if not text:
+            continue
+
+        tl      = text.lower()
+        is_list = para.style.name == "List Paragraph"
+
+        if any(tl.startswith(p) for p in _SKIP_PREFIXES):
+            continue
+
+        if is_list:
+            if current_section is None:
+                current_section = {"heading": "Resolution Steps", "steps": []}
+                sections.append(current_section)
+            level, clean = _list_level(para, text)
+            # Each step is an object carrying its hierarchy level so the agent
+            # can render main / sub / sub-sub without guessing or merging.
+            current_section["steps"].append({"text": clean, "level": level})
+            continue
+
+        if first_normal:
+            title = text
+            first_normal = False
+            continue
+
+        if tl.startswith("environment:"):
+            environment = text.split(":", 1)[1].strip()
+            continue
+
+        if tl.startswith("note:"):
+            note = text.split(":", 1)[1].strip()
+            continue
+
+        # Structural dividers (symptoms, cause, resolution headers) — skip them
+        # and the Normal paragraph that immediately follows each one is their body text,
+        # which is also skipped by falling through to the end of this loop.
+        if any(tl.startswith(h) for h in _KNOWN_SECTIONS):
+            current_section = None
+            continue
+
+        if _OPTION_RE.match(tl):
+            current_section = {"heading": text.rstrip(":"), "steps": []}
+            sections.append(current_section)
+
+    return {"title": title, "environment": environment, "note": note, "sections": sections}
+
+
+# ── Helper ────────────────────────────────────────────────────────
+def compute_spread(scores: list[float]) -> str:
+    """
+    'high' (ambiguous → ask follow-up) when ANY of:
+      1. Weak absolute match:  top score below HIGH_CONFIDENCE
+      2. Weak dominance:       gap between #1 and #2 below SPREAD_THRESHOLD
+
+    'low' (confident → skip follow-up) only when BOTH hold:
+      1. Top score >= HIGH_CONFIDENCE   (strong absolute match)
+      2. Gap >= SPREAD_THRESHOLD        (clear winner over #2)
+    """
+    if not scores:
+        return "low"
+
+    weak_absolute  = scores[0] < HIGH_CONFIDENCE
+    weak_dominance = len(scores) > 1 and (scores[0] - scores[1]) < SPREAD_THRESHOLD
+
+    if weak_absolute or weak_dominance:
+        return "high"
+    return "low"
+
+def dedupe_by_kb(rows):
+    """Keep only the best-scoring chunk per kb_id, so the agent sees
+    distinct KB articles (not multiple chunks of the same article)."""
+    best = {}
+    for row in rows:
+        kb_id = row.get("kb_id", "")
+        if kb_id not in best or row["score"] > best[kb_id]["score"]:
+            best[kb_id] = row
+    return sorted(best.values(), key=lambda c: c["score"], reverse=True)
+
+
+# ── Symptom selection: rank by discriminating power ───────────────
+#
+# Goal: when spread == 'high', the agent must ask targeted follow-up
+# questions. Instead of passing the full symptom list and leaving the
+# choice to the LLM, we pre-select the 2-3 symptoms that best split
+# the candidate set. We do this with two complementary signals:
+#
+#   1. Hybrid + semantic re-rank against the user description
+#      — run each symptom as a mini semantic search against the
+#        user description. Symptoms that are more *distinctive* from
+#        what the user already said score higher (they add information).
+#
+#   2. Information-gain (mass-proximity-to-0.5)
+#      — a symptom is most discriminating when it is present in some
+#        candidates but not others, and when the probability mass of
+#        the candidates that carry it is closest to 0.5. That way a
+#        yes/no answer maximally splits the belief distribution.
+#
+# We combine these into a final score and return the top-k symptoms.
+
+def _tfidf_like_vector(text: str) -> dict[str, float]:
+    """
+    Very lightweight bag-of-words TF vector over cleaned tokens.
+    Used for cosine similarity between description and symptoms
+    without needing an embedding API call.
+    """
+    tokens = re.findall(r"[a-z]+", text.lower())
+    # Filter trivial stopwords
+    STOP = {
+        "a","an","the","is","it","in","on","of","to","and","or","for",
+        "with","this","that","was","are","be","at","by","has","have",
+        "had","not","but","from","as","do","did","will","would","can",
+        "could","my","your","their","its","i","you","he","she","they",
+        "we","our","no","so","if","when","how","what","which","where",
+        "there","been","more","also","than","then","all","any","some",
+        "been","were","should","may","might","over","after","before",
+    }
+    counts: dict[str, float] = {}
+    for t in tokens:
+        if t not in STOP and len(t) > 2:
+            counts[t] = counts.get(t, 0.0) + 1.0
+    norm = math.sqrt(sum(v * v for v in counts.values())) or 1.0
+    return {k: v / norm for k, v in counts.items()}
+
+
+def _cosine(a: dict[str, float], b: dict[str, float]) -> float:
+    """Cosine similarity between two TF vectors (dicts)."""
+    return sum(a.get(k, 0.0) * v for k, v in b.items())
+
+
+def select_discriminating_symptoms(
+    description: str,
+    candidates: list[dict],
+    top_k: int = 3,
+) -> list[str]:
+    """
+    Given the user description and the top-N candidate KB articles,
+    return the 2-3 symptoms that best discriminate between the
+    candidates so the agent can frame targeted follow-up questions.
+
+    Algorithm
+    ---------
+    For each symptom string across all candidates:
+
+      a) Semantic relevance score  (rel):
+         Cosine similarity between description and symptom text.
+         High rel means the user's description already resonates with
+         this symptom — useful signal that the symptom is live.
+
+      b) Cross-candidate distinctiveness score  (dist):
+         A symptom appearing in EVERY candidate offers no split
+         power. A symptom appearing in only ONE candidate is very
+         distinctive but may be too narrow. We reward symptoms that
+         appear in a SUBSET of candidates (presence mass ≈ 0.5 of
+         total score mass), maximising information gain.
+         dist = 1 - |2 * mass_fraction - 1|
+         (1.0 when the symptom's mass ≈ 50% of total, 0 when all or none)
+
+      c) Final score = rel * 0.5 + dist * 0.5
+         Both signals matter: we want symptoms the user's situation
+         touches (rel) that also split the candidate set (dist).
+
+    Deduplication: symptoms that are near-duplicates (cosine > 0.85)
+    are collapsed — only the higher-scoring one survives.
+
+    Returns up to `top_k` symptom strings, ordered best-first.
+    """
+    if not candidates:
+        return []
+
+    # Collect all unique symptom strings with their source candidate scores
+    # symptom_sources: symptom_text -> list of candidate scores that carry it
+    symptom_sources: dict[str, list[float]] = {}
+    for cand in candidates:
+        for sym in (cand.get("key_symptoms") or []):
+            sym = sym.strip()
+            if not sym:
+                continue
+            symptom_sources.setdefault(sym, []).append(float(cand["score"]))
+
+    if not symptom_sources:
+        logger.info("select_discriminating_symptoms: no symptoms found in candidates")
+        return []
+
+    total_score_mass = sum(c["score"] for c in candidates)
+    desc_vec = _tfidf_like_vector(description)
+
+    scored: list[tuple[float, str]] = []
+    for sym_text, carrier_scores in symptom_sources.items():
+        sym_vec = _tfidf_like_vector(sym_text)
+
+        # a) relevance: cosine between description and symptom
+        rel = _cosine(desc_vec, sym_vec)
+
+        # b) distinctiveness: how close is carrier mass to 50% of total
+        carrier_mass = sum(carrier_scores) / total_score_mass if total_score_mass > 0 else 0.0
+        dist = 1.0 - abs(2.0 * carrier_mass - 1.0)
+
+        final = rel * 0.5 + dist * 0.5
+        scored.append((final, sym_text))
+
+    # Sort descending by final score
+    scored.sort(key=lambda x: -x[0])
+
+    # Greedy deduplication: suppress near-duplicate symptoms
+    selected: list[str] = []
+    selected_vecs: list[dict[str, float]] = []
+    for _, sym_text in scored:
+        sym_vec = _tfidf_like_vector(sym_text)
+        if any(_cosine(sym_vec, sv) > 0.85 for sv in selected_vecs):
+            continue   # too similar to something already chosen
+        selected.append(sym_text)
+        selected_vecs.append(sym_vec)
+        if len(selected) >= top_k:
+            break
+
+    logger.info(
+        "select_discriminating_symptoms: %d symptoms -> %d selected (top_k=%d)",
+        len(scored), len(selected), top_k,
+    )
+    for i, s in enumerate(selected):
+        logger.info("  symptom[%d]: %r  (score=%.3f)", i, s, scored[i][0])
+
+    return selected
+
+
+# ── Global error handler ──────────────────────────────────────────
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    logger.exception("Unhandled error")
+    return JSONResponse(
+        status_code=500,
+        content={"error": f"{type(exc).__name__}: {exc}"},
+    )
+
+
+# ── Health check ──────────────────────────────────────────────────
+@app.get("/healthz")
+def health():
+    return {"status": "ok", "tools": ["get_kb_candidates", "get_kb_guidance"]}
+
+
+# ── Main endpoint ─────────────────────────────────────────────────
+@app.post("/get_kb_candidates")
+def get_kb_candidates(
+    body: CandidateRequest,
+    x_api_key: str = Header(default=""),
+):
+    if x_api_key != TOOL_API_KEY:
+        raise HTTPException(status_code=401, detail="Invalid API key")
+
+    description = (body.description or "").strip()
+    if not description:
+        raise HTTPException(status_code=400, detail="'description' is required")
+
+    logger.info("get_kb_candidates | description=%r", description[:200])
+
+    # Optional: if the index has a separate vector field for symptoms
+    # (e.g. "symptoms_embedding"), set SYMPTOMS_VECTOR_FIELD in .env to
+    # add it as a second vector query — symptom matching then directly
+    # influences ranking instead of only body text.
+    symptoms_field = os.environ.get("SYMPTOMS_VECTOR_FIELD", "").strip()
+    vector_queries = [VectorizableTextQuery(
+        text=description,
+        k_nearest_neighbors=20,
+        fields="content_embedding",
+    )]
+    if symptoms_field:
+        vector_queries.append(VectorizableTextQuery(
+            text=description,
+            k_nearest_neighbors=20,
+            fields=symptoms_field,
+        ))
+
+    try:
+        results = search.search(
+            search_text=description,
+            query_type=QueryType.SEMANTIC,
+            semantic_configuration_name=SEMANTIC_CONFIG_NAME,
+            vector_queries=vector_queries,
+            select=[
+                "kb_id",
+                "content_text",
+                "symptoms",
+                "guidance_troubleshoot",
+            ],
+            top=TOP_K,
+        )
+
+        rows = []
+        for r in results:
+            score = float(
+                r.get("@search.reranker_score") or r.get("@search.score") or 0.0
+            )
+            rows.append({
+                "kb_id":                 r.get("kb_id", ""),
+                "summary":               (r.get("content_text") or "")[:300],
+                "key_symptoms":          r.get("symptoms") or [],
+                "guidance_troubleshoot": r.get("guidance_troubleshoot"),
+                "score":                 round(score, 3),
+            })
+
+        # Collapse chunks -> distinct KB articles (best chunk wins)
+        candidates = dedupe_by_kb(rows)
+
+        if not candidates:
+            logger.info("No results returned from search")
+            return {
+                "candidates":               [],
+                "spread":                   "low",
+                "top_score":                0.0,
+                "discriminating_symptoms":  [],
+                "any_meets_display_threshold": False,
+                "message":                  "No candidate exceeded minimum confidence.",
+            }
+
+        scores = [c["score"] for c in candidates]
+
+        logger.info("Search returned %d chunks -> %d distinct KB articles",
+                    len(rows), len(candidates))
+        for c in candidates[:RETURN_K]:
+            logger.info("  candidate: %s | score=%.3f | symptoms=%s",
+                        c["kb_id"], c["score"], c["key_symptoms"])
+
+        if scores[0] < MIN_SCORE:
+            logger.info("No candidate above MIN_SCORE=%.2f", MIN_SCORE)
+            return {
+                "candidates":               [],
+                "spread":                   "low",
+                "top_score":                round(scores[0], 3),
+                "discriminating_symptoms":  [],
+                "any_meets_display_threshold": False,
+                "message":                  "No candidate exceeded minimum confidence.",
+            }
+
+        returned = candidates[:RETURN_K]
+        spread = compute_spread([c["score"] for c in returned])
+        logger.info("spread=%s | top=%.3f | second=%s",
+                    spread, scores[0],
+                    f"{scores[1]:.3f}" if len(scores) > 1 else "n/a")
+
+        # ── Display-threshold flag (does NOT affect grounding) ──
+        # Each returned candidate is tagged with whether its score clears
+        # DISPLAY_MIN_SCORE. Candidates below it are still returned (so the
+        # agent can keep asking grounding follow-ups), but the agent uses
+        # this boolean to decide whether the final handoff shows a KB
+        # document or the "no valid document" message. Computing the
+        # comparison here (not in the LLM) keeps the decision deterministic.
+        for c in returned:
+            c["meets_display_threshold"] = bool(c["score"] >= DISPLAY_MIN_SCORE)
+
+        # ── Symptom selection (only meaningful when spread is 'high') ──
+        # When spread == 'high' the agent must ask follow-up questions.
+        # We pre-select the 2-3 symptoms from the returned candidates
+        # that best split the candidate set, so the agent doesn't have
+        # to invent or cherry-pick from a flat symptom dump.
+        # When spread == 'low' we still include the field (empty list)
+        # so the schema is stable — the agent can safely ignore it.
+        discriminating_symptoms: list[str] = []
+        if spread == "high":
+            discriminating_symptoms = select_discriminating_symptoms(
+                description=description,
+                candidates=returned,
+                top_k=TOP_SYMPTOMS_K,
+            )
+
+        return {
+            "candidates":               returned,
+            "spread":                   spread,
+            "top_score":                round(scores[0], 3),
+            "discriminating_symptoms":  discriminating_symptoms,
+            "any_meets_display_threshold": bool(scores[0] >= DISPLAY_MIN_SCORE),
+        }
+
+    except Exception as e:
+        logger.exception("Search failed")
+        raise
+
+
+# ── KB Guidance endpoint ──────────────────────────────────────────
+@app.post("/get_kb_guidance")
+def get_kb_guidance(
+    body: GuidanceRequest,
+    x_api_key: str = Header(default=""),
+):
+    if x_api_key != TOOL_API_KEY:
+        raise HTTPException(status_code=401, detail="Invalid API key")
+
+    kb_id = (body.kb_id or "").strip()
+    if not kb_id:
+        raise HTTPException(status_code=400, detail="'kb_id' is required")
+
+    logger.info("get_kb_guidance | kb_id=%s", kb_id)
+    blob_name = f"{kb_id}.docx"
+
+    try:
+        doc_bytes = (
+            blob_service
+            .get_blob_client(container=BLOB_CONTAINER_NAME, blob=blob_name)
+            .download_blob()
+            .readall()
+        )
+    except ResourceNotFoundError:
+        raise HTTPException(status_code=404, detail=f"KB article '{kb_id}' not found in storage.")
+    except Exception:
+        logger.exception("Blob download failed: %s", blob_name)
+        raise
+
+    parsed = _parse_kb_docx(doc_bytes)
+
+    # Generate a 2-hour read-only SAS URL using Managed Identity (user delegation key).
+    # Requires Storage Blob Delegator role on the App Service identity.
+    document_url = None
+    try:
+        now    = datetime.now(timezone.utc)
+        expiry = now + timedelta(hours=2)
+        udk    = blob_service.get_user_delegation_key(key_start_time=now, key_expiry_time=expiry)
+        sas    = generate_blob_sas(
+            account_name=blob_service.account_name,
+            container_name=BLOB_CONTAINER_NAME,
+            blob_name=blob_name,
+            user_delegation_key=udk,
+            permission=BlobSasPermissions(read=True),
+            expiry=expiry,
+        )
+        document_url = f"{BLOB_ACCOUNT_URL.rstrip('/')}/{BLOB_CONTAINER_NAME}/{blob_name}?{sas}"
+    except Exception:
+        logger.warning("Could not generate SAS URL for %s — returning without link", blob_name)
+
+    return {
+        "kb_id":         kb_id,
+        "title":         parsed["title"],
+        "environment":   parsed["environment"],
+        "note":          parsed["note"],
+        "sections":      parsed["sections"],
+        "document_url":  document_url,
+        "document_name": blob_name,
+    }
+
+
+# ── Diagnostic endpoint ───────────────────────────────────────────
+@app.post("/debug_search")
+def debug_search(
+    body: CandidateRequest,
+    x_api_key: str = Header(default=""),
+):
+    if x_api_key != TOOL_API_KEY:
+        raise HTTPException(status_code=401, detail="Invalid API key")
+
+    description = (body.description or "").strip()
+    if not description:
+        raise HTTPException(status_code=400, detail="'description' is required")
+
+    logger.info("debug_search | description=%r", description[:200])
+
+    try:
+        results = search.search(
+            search_text=description,
+            query_type=QueryType.SEMANTIC,
+            semantic_configuration_name=SEMANTIC_CONFIG_NAME,
+            vector_queries=[VectorizableTextQuery(
+                text=description,
+                k_nearest_neighbors=20,
+                fields="content_embedding",
+            )],
+            select=[
+                "kb_id",
+                "content_text",
+                "symptoms",
+            ],
+            top=TOP_K,
+        )
+
+        raw_results = []
+        for idx, r in enumerate(results, start=1):
+            score = float(
+                r.get("@search.reranker_score") or r.get("@search.score") or 0.0
+            )
+            content_text = r.get("content_text") or ""
+            raw_results.append({
+                "rank":            idx,
+                "score":           round(score, 3),
+                "kb_id":           r.get("kb_id", ""),
+                "symptoms":        r.get("symptoms") or [],
+                "content_preview": content_text[:200],
+                "content_length":  len(content_text),
+            })
+
+        deduped = dedupe_by_kb(raw_results)
+        returned = deduped[:RETURN_K]
+        return {
+            "query":              description,
+            "total_results":      len(raw_results),
+            "results":            raw_results,
+            "distinct_articles":  [
+                {"kb_id": c["kb_id"], "score": c["score"]} for c in deduped
+            ],
+            "spread_on_returned": compute_spread([c["score"] for c in returned]),
+        }
+
+    except Exception as e:
+        logger.exception("Debug search failed")
+        raise
